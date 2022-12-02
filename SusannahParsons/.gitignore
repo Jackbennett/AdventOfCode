@@ -1,3 +1,4 @@
-calories.exe
-calories.o
+*.exe
+*.o
 input.txt
+strategyInput.txt
