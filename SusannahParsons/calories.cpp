@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -9,6 +11,8 @@ int main() {
 
     // Read from the text file
     ifstream inputFile("input.txt");
+
+    vector<int> caloryVector;
 
     int elfNumber = 1;
     int caloryCount = 0;
@@ -22,6 +26,7 @@ int main() {
             greatestCalories = caloryCount;
             elfToAsk = elfNumber;
         }
+        caloryVector.push_back(caloryCount);
         cout << caloryCount << "\n";
         elfNumber++;
         caloryCount = 0;
@@ -32,7 +37,22 @@ int main() {
     }
     cout << caloryCount << "\n";
 
-    cout << "Elf " << elfToAsk << " had the greatest calories, with " << greatestCalories;
+    cout << "Elf " << elfToAsk << " had the greatest calories, with " << greatestCalories << "\n";
+
+    //Sort descending order
+    sort(caloryVector.begin(), caloryVector.end());
+
+    //Get the last three items
+    int finalIndex = caloryVector.size()-1;
+
+    int sumTopThreeCalories = 0;
+
+    for(int i=0; i<3; i++){
+        cout << " calory placement " << (i + 1) << ": "  << caloryVector[finalIndex-i] << "\n";
+        sumTopThreeCalories = sumTopThreeCalories + caloryVector[finalIndex-i];
+    }
+
+    cout << "Total sum of top three calory count : " << sumTopThreeCalories << "\n";
 
     // Close the file
     inputFile.close();
