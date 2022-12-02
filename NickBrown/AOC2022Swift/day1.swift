@@ -1,8 +1,6 @@
 
 import Foundation
 
-var data = openInputFile(input_file: "day1.txt")
-
 class day1{
     var input_file:String
     var elves:Array<Array<Int>>
