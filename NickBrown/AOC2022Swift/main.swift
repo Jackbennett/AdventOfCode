@@ -23,3 +23,10 @@ func day_2(){
 }
 day_2()
 
+func day_3(){
+    let c = Day3(filename: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/day3.txt")
+    print("Day 3 Part 1: \(c.sumOfPriorities)")
+    c.threeElves()
+    print("Day 3 Part 2: \(c.secondSum)")
+}
+day_3()
