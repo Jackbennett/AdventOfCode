@@ -30,3 +30,10 @@ func day_3(){
     print("Day 3 Part 2: \(c.secondSum)")
 }
 day_3()
+
+func day_4(){
+    let d = Day4(input_file_: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/day4.txt")
+    print("Day 4 Part 1: \(d.overlaps)")
+    print("Day 4 Part 2: \(d.pt2)")
+}
+ day_4()
