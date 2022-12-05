@@ -23,7 +23,7 @@ fn main() {
         .max()
         .unwrap_or(0);
     println!(
-        "{} is the most Calories carried by any single Elf",
+        "(Day 1a) {} is the most Calories carried by any single Elf",
         most_calories
     );
 
@@ -33,7 +33,7 @@ fn main() {
         .fold(0, |acc, elf| acc + elf.energy());
 
     println!(
-        "{} Calories carried by the top 3 elves, each being;",
+        "(Day 1b) {} Calories carried by the top 3 elves, each being;",
         top_3_calories
     );
 
