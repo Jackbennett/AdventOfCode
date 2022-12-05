@@ -41,15 +41,28 @@ runCrates(ifstream & inputFile, string fileContent){
             int numberToMove = stoi(fileContent.substr(indexStartFirstNumber,indexEndFirstNumber));
             int fromStack = stoi(fileContent.substr(indexStartSecondNumber,indexEndSecondNumber))-1;//Zero based index
             int toStack = stoi(fileContent.substr(indexStartThirdNumber,indexEndThirdNumber))-1;
-            for(int count = 0; count<numberToMove; count++){
-                //Now move the crates from to...
-                char crateToMove = crates[fromStack].front();
-                //Delete from from stack
-                crates[fromStack].erase(crates[fromStack].begin());
-                //Add to to stack
+            //Part 1, crates change order when moved
+//            for(int count = 0; count<numberToMove; count++){
+//                //Now move the crates from to...
+//                char crateToMove = crates[fromStack].front();
+//                //Delete from from stack
+//                crates[fromStack].erase(crates[fromStack].begin());
+//                //Add to to stack
+//                crates[toStack].insert(crates[toStack].begin(), crateToMove);
+//
+//            }
+        //Part 2
+            for(int count = numberToMove-1; count > -1; count--){
+                //Iterating backwards 3,2,1...
+                //Copy the crates to to
+                char crateToMove = crates[fromStack][count];
                 crates[toStack].insert(crates[toStack].begin(), crateToMove);
-
             }
+            //Now delete the crates from from
+            for(int count = numberToMove-1; count > -1; count--){
+                crates[fromStack].erase(crates[fromStack].begin());
+            }
+
         }
     }
     //Print out crates to see what's what
