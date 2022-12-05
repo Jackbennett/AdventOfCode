@@ -12,7 +12,7 @@ import QuartzCore
 let start = CACurrentMediaTime()
 
 func day_1(){
-    let a = day1(input_file:"/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/day1.txt")
+    let a = day1(input_file:"/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day1.txt")
     print("Day 1 Part 1: \(a.max())")
     print("Day 1 Part 2: \(a.topThree())")
 }
@@ -21,7 +21,7 @@ let day1finish = CACurrentMediaTime()
 print("Day 1 execution time: \(day1finish - start)")
 
 func day_2(){
-    let b = Day2(input_file:"/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/day2.txt")
+    let b = Day2(input_file:"/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day2.txt")
     b.open_input()
     print("Day 2 Part 1: \(b.pt1())")
     print("Day 2 Part 2: \(b.pt2())")
@@ -31,7 +31,7 @@ let day2finish = CACurrentMediaTime()
 print("Day 2 execution time: \(day2finish - day1finish)")
 
 func day_3(){
-    let c = Day3(filename: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/day3.txt")
+    let c = Day3(filename: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day3.txt")
     print("Day 3 Part 1: \(c.sumOfPriorities)")
     c.threeElves()
     print("Day 3 Part 2: \(c.secondSum)")
@@ -41,7 +41,7 @@ let day3finish = CACurrentMediaTime()
 print("Day 3 execution time: \(day3finish - day2finish)")
 
 func day_4(){
-    let d = Day4(input_file_: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/day4.txt")
+    let d = Day4(input_file_: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day4.txt")
     print("Day 4 Part 1: \(d.overlaps)")
     print("Day 4 Part 2: \(d.pt2)")
 }
@@ -50,7 +50,7 @@ let day4finish = CACurrentMediaTime()
 print("Day 4 execution time: \(day4finish - day3finish)")
 
 func day_5(){
-    let e = Day5(filename: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/day5.txt")
+    let e = Day5(filename: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day5.txt")
     print("Day 5 Part 1: \(e.pt1)")
     print("Day 5 Part 2: \(e.pt2)")
 }
