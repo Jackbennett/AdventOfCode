@@ -1,6 +1,7 @@
 use std::{fs, path};
 
 pub mod elves;
+pub mod rps_tournament;
 
 fn main() {
     let file = fs::read_to_string(path::Path::new("./input/Elf_Calories.txt"))
@@ -44,4 +45,18 @@ fn main() {
             expedition.elves[count].energy()
         );
     }
+
+    let file_rps_tourny = fs::read_to_string(path::Path::new("./input/Rock_Paper_Scissors.txt"))
+        .expect("Missing Day 2 Input File");
+
+    println!();
+
+    let (_, tournament) = rps_tournament::parse_tournament(&file_rps_tourny).unwrap();
+
+    let total_to_plan: usize = tournament.iter().map(|t| t.score()).sum();
+
+    println!(
+        "(Day 2a) Tournament Scores: {} if all goes to plan",
+        total_to_plan
+    );
 }
