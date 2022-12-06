@@ -7,9 +7,9 @@
 
 import Foundation
 
-func open_file(input_file:String)->[String.SubSequence]{
+func open_file(input_file:String)->[Character]{
     let file_contents: String = try! String(contentsOfFile: input_file)
-    let data = file_contents.split(separator: "")
+    let data = Array(file_contents)
     return data
 }
 func day6(input_file:String, num_digits:Int)->Int{
