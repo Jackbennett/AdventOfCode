@@ -4,6 +4,13 @@ pub mod elves;
 pub mod rps_tournament;
 
 fn main() {
+    day1();
+    println!();
+    day2();
+    println!();
+}
+
+fn day1() {
     let file = fs::read_to_string(path::Path::new("./input/Elf_Calories.txt"))
         .expect("text input file should exist");
 
@@ -45,11 +52,11 @@ fn main() {
             expedition.elves[count].energy()
         );
     }
+}
 
+fn day2() {
     let file_rps_tourny = fs::read_to_string(path::Path::new("./input/Rock_Paper_Scissors.txt"))
         .expect("Missing Day 2 Input File");
-
-    println!();
 
     let (_, tournament) = rps_tournament::parse_tournament(&file_rps_tourny).unwrap();
 
