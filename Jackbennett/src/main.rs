@@ -59,4 +59,11 @@ fn main() {
         "(Day 2a) Tournament Scores: {} if all goes to plan",
         total_to_plan
     );
+
+    let (_, prediction) = rps_tournament::parse_prediction(&file_rps_tourny).unwrap();
+    let total_predicted: usize = prediction.iter().map(|t| t.score()).sum();
+    println!(
+        "(Day 2b) Predicted outcome scores: {} if all goes to plan",
+        total_predicted
+    );
 }

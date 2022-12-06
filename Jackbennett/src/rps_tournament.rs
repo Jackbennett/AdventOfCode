@@ -27,7 +27,7 @@ impl Ord for Rps {
     }
 } // TODO fix compare to understand Rock/paper/scissors not just gt/tf enum value.
 
-#[derive(Eq, PartialEq, Ord, PartialOrd, Debug)]
+#[derive(Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Debug)]
 pub enum Result {
     LOSS = 0,
     DRAW = 3,
@@ -36,8 +36,8 @@ pub enum Result {
 
 #[derive(PartialEq, Debug)]
 pub struct Round {
-    choice: Rps,
     opponent: Rps,
+    choice: Rps,
 }
 
 impl Round {
@@ -67,12 +67,62 @@ impl Round {
     }
 }
 
+pub struct Predict {
+    opponent: Rps,
+    target: Result,
+}
+impl Predict {
+    pub fn parse(s: &str) -> IResult<&str, Self> {
+        let turn = |input| {
+            alt((
+                map(tag("A"), |_| Rps::ROCK),
+                map(tag("B"), |_| Rps::PAPER),
+                map(tag("C"), |_| Rps::SCISSORS),
+            ))(input)
+        };
+        let result = |input| {
+            alt((
+                map(tag("X"), |_| Result::LOSS),
+                map(tag("Y"), |_| Result::DRAW),
+                map(tag("Z"), |_| Result::WIN),
+            ))(input)
+        };
+
+        map(
+            separated_pair(turn, tag(" "), result),
+            |(opponent, target)| Self { opponent, target },
+        )(s)
+    }
+    pub fn choice(&self) -> Rps {
+        match self.target {
+            Result::DRAW => self.opponent,
+            Result::LOSS => match self.opponent {
+                Rps::ROCK => Rps::SCISSORS,
+                Rps::PAPER => Rps::ROCK,
+                Rps::SCISSORS => Rps::PAPER,
+            },
+            Result::WIN => match self.opponent {
+                Rps::ROCK => Rps::PAPER,
+                Rps::PAPER => Rps::SCISSORS,
+                Rps::SCISSORS => Rps::ROCK,
+            },
+        }
+    }
+    pub fn score(&self) -> usize {
+        self.choice() as usize + self.target as usize
+    }
+}
+
 pub fn parse_tournament(input: &str) -> IResult<&str, Vec<Round>> {
     separated_list1(line_ending, Round::parse)(input)
 }
 
+pub fn parse_prediction(input: &str) -> IResult<&str, Vec<Predict>> {
+    separated_list1(line_ending, Predict::parse)(input)
+}
+
 #[cfg(test)]
-mod tests {
+mod tests_moves {
     use super::*;
 
     #[test]
@@ -121,5 +171,24 @@ mod tests {
         assert_eq!(tournament[0].choice, Rps::PAPER);
         assert_eq!(tournament[0].result(), Result::WIN);
         assert_eq!(tournament[0].score(), 8); // 2(Paper) + 6(win) = 8
+    }
+}
+
+#[cfg(test)]
+mod tests_prediction {
+    use super::*;
+
+    #[test]
+    fn test_prediction() {
+        let input = "A X\r\n";
+
+        let (_remaining, prediction) = parse_prediction(input).unwrap();
+
+        assert_eq!(prediction.len(), 1);
+
+        assert_eq!(prediction[0].opponent, Rps::ROCK);
+        assert_eq!(prediction[0].target, Result::LOSS);
+        assert_eq!(prediction[0].choice(), Rps::SCISSORS);
+        assert_eq!(prediction[0].score(), 3); // 3(Scissors) + 0(Loss) = 3
     }
 }
