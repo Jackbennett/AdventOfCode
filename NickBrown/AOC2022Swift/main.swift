@@ -65,3 +65,17 @@ func day_6(){
  day_6()
 let day6finish = CACurrentMediaTime()
 print("Day 6 execution time: \(day6finish - day5finish)")
+
+func day_7(){
+    let f = day7(input_file: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day7.txt")
+    print("Day 7 Part 1: \(f.pt1())")
+    print("Day 7 Part 2: \(f.pt2())")
+}
+ day_7()
+let day7finish = CACurrentMediaTime()
+print("Day 7 execution time: \(day7finish - day6finish)")
+
+
+
+
+
