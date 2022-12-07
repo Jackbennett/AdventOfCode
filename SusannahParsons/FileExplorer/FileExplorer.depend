@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1670446635 source:d:\adventofcode\susannahparsons\fileexplorer\directoryobject.cpp
+	"DirectoryObject.h"
+
+1670448005 d:\adventofcode\susannahparsons\fileexplorer\directoryobject.h
+	<string>
+
