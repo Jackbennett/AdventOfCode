@@ -14,6 +14,7 @@ https://adventofcode.com/2022
 | Nick M | Javascript | 
 | Susannah | C++ |
 | obrunnock | Python |
+| <a href="https://github.com/Umar-Waseem">Umar Waseem</a> | C++ |
 
 ## How To;
 
