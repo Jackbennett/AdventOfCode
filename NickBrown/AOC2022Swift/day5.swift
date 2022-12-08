@@ -113,8 +113,3 @@ class Day5{
         stacks[from].removeFirst(many)
     }
 }
-
-
-
-
-

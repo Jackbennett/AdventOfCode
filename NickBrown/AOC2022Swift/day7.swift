@@ -154,6 +154,3 @@ struct file{
         self.parent = parent
     }
 }
-
-
-
