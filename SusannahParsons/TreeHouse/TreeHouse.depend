@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1670613118 source:d:\adventofcode\susannahparsons\treehouse\tree.cpp
+	"Tree.h"
+
+1670613035 d:\adventofcode\susannahparsons\treehouse\tree.h
+
+1670616630 source:d:\adventofcode\susannahparsons\treehouse\main.cpp
+	<iostream>
+	<fstream>
+	<string>
+	"TreeQuad.h"
+
+1670615640 d:\adventofcode\susannahparsons\treehouse\treequad.h
+	"Tree.h"
+	<deque>
+	<vector>
+	<list>
+	<algorithm>
+	<iostream>
+
+1670616606 source:d:\adventofcode\susannahparsons\treehouse\treequad.cpp
+	"TreeQuad.h"
+
