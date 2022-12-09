@@ -19,3 +19,15 @@ int Tree::getHeight()
 {
     return height;
 }
+void Tree::setViewingDistances(int l, int r, int u, int d)
+{
+    viewingLeft = l;
+    viewingRight = r;
+    viewingDown = d;
+    viewingUp = u;
+}
+int Tree::getScenicScore()
+{
+    return viewingLeft * viewingRight * viewingDown * viewingUp;
+}
+

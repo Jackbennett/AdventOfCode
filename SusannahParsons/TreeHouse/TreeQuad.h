@@ -14,6 +14,9 @@ public:
     void addTree(int treeSize, bool newRow, int col);
     void markVisibility();
     list<Tree*>* getVisibleTrees();
+    void calculateScenicScores();
+    Tree* getTree(int rowIndex, int colIndex);
+    int getViewDistance(deque<Tree*> line, int startIndex, int endIndex, Tree* mainTree);
 private:
     vector<deque<Tree*>*> columns;
     vector<deque<Tree*>*> rows;

@@ -30,7 +30,8 @@ runFileProcessor(ifstream & inputFile, string fileContent){
     cout << "Tree quad initialised\n";
     tq.markVisibility();
     list<Tree*>* visibleTrees = tq.getVisibleTrees();
-    cout << "Number visible trees: " << visibleTrees->size();
+    cout << "Number visible trees: " << visibleTrees->size() << "\n";
+    tq.calculateScenicScores();
     return 0;
 }
 int main()
