@@ -19,7 +19,8 @@ public:
     void addSubObject(DirectoryObject* object);
     optional<Directory*> getDirectory(string dirName);
     list<Directory*> getSubDirectories();
-    void listAll(list<Directory*>* smallDirs) const;
+    void listAll() const;
+    void returnDirsOfSize(int sizeNeeded, list<Directory*>* dirs) const;
     int getSize() const override;
     list<DirectoryObject*> getObjects() const;
 private:

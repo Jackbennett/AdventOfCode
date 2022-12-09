@@ -37,16 +37,30 @@ int FileTree::getSize()
 }
 void FileTree::listAll() const
 {
+    int fileSystemSize = 70000000;
+    int requiredForUpdate = 30000000;
+    int unusedSpace = fileSystemSize - topDir->getSize();
+    int spaceNeeded = requiredForUpdate-unusedSpace;
+    cout << "Top directory size\t" << topDir->getSize() << "\n";
+    cout << "Unused space\t" << unusedSpace << "\n";
+    cout << "Space needed\t" << spaceNeeded << "\n";
+    Directory* bestToDelete = new Directory("Empty");
     cout << "Listing all files and directories in " << currentDir->name() << "\n";
-    list<Directory*> smallDirs;
-    currentDir->listAll(&smallDirs);
-    cout << "The small directories are:\n";
-    int  totalSmallDirSize = 0;
-    for_each(smallDirs.begin(), smallDirs.end(), [&totalSmallDirSize](Directory* o) mutable {
-             cout << o->name() << "\t\t\tsize: " << o->getSize() << "\n";
-             totalSmallDirSize += o->getSize();
+    currentDir->listAll();
+    list<Directory*> dirList;
+    currentDir->returnDirsOfSize(spaceNeeded, &dirList);
+    for_each(dirList.begin(), dirList.end(), [&bestToDelete, spaceNeeded](Directory* o) mutable {
+             if(bestToDelete->getSize()==0){
+                bestToDelete = o;
+             }else{
+                 int newDiff = o->getSize()-spaceNeeded;
+                 int oldDiff = bestToDelete->getSize()-spaceNeeded;
+                 if(newDiff<oldDiff){
+                    bestToDelete = o;
+                 }
+             }
      });
-     cout << "Total small dir size: " << totalSmallDirSize;
+     cout << "Best directory to delete is: " << bestToDelete->name() << "\tsize: " << bestToDelete->getSize();
 }
 void FileTree::openTopDir()
 {

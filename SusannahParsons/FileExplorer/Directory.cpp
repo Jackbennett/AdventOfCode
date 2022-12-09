@@ -43,18 +43,31 @@ optional<Directory*> Directory::getDirectory(string dirName)
     return nullopt;
 }
 
-void Directory::listAll(list<Directory*>* smallDirs) const
+void Directory::listAll() const
 {
-    for_each(objects.begin(), objects.end(), [smallDirs](DirectoryObject* o)mutable {
+    for_each(objects.begin(), objects.end(), [](DirectoryObject* o) {
              cout << o->name() << "\t\t\tsize: " << o->getSize() << "\n";
              if(o->getType()==DIRECTORY){
-                if(static_cast<Directory*>(o)->getSize()<=100000){
-                    smallDirs->insert(smallDirs->begin(),static_cast<Directory*>(o));
-                }
-                static_cast<Directory*>(o)->listAll(smallDirs);
+                Directory* dir = static_cast<Directory*>(o);
+                //Recursion
+                dir->listAll();
              }
      });
 }
+void Directory::returnDirsOfSize(int sizeNeeded, list<Directory*>* dirs) const
+{
+    for_each(objects.begin(), objects.end(), [sizeNeeded,dirs](DirectoryObject* o)mutable {
+             if(o->getType()==DIRECTORY){
+                    Directory* dir = static_cast<Directory*>(o);
+                if(dir->getSize()>=sizeNeeded){
+                    dirs->insert(dirs->begin(),dir);
+                }
+             //Recursion
+                dir->returnDirsOfSize(sizeNeeded,dirs);
+             }
+     });
+}
+
 list<DirectoryObject*> Directory::getObjects() const
 {
     return objects;
