@@ -1,38 +1,71 @@
 #include "Directory.h"
-void Directory::addSubObject(DirectoryObject object)
+
+Directory::Directory(string name)
+:DirectoryObject(name)
 {
-    if (dynamic_cast<FileObject*>(object) != nullptr){
-        //Must be a file
-        FileObject f = dynamic_cast<FileObject*>(object);
-        int currentSize = getSize();
-        setSize(currentSize + f.getSize());
-    }
-    //Add file or directory to the list
-    objects.insert(object);
+    type = DIRECTORY;
 }
 
-int Directory::getSize()
+Directory::Directory(const Directory& dir)
+:DirectoryObject(dir.name())
+{
+    type = DIRECTORY;
+    list<DirectoryObject*> orig = dir.getObjects();
+    for (list<DirectoryObject*>::const_iterator it = orig.begin(); it != orig.end(); ++it){
+        objects.insert(objects.end(),*it);
+    }
+}
+
+void Directory::addSubObject(DirectoryObject* object)
+{
+    //Add file or directory to the list
+    objects.insert(objects.begin(),object);
+}
+
+int Directory::getSize() const
 {
     int totalSize = 0;
-    for_each(objects.begin(), objects.end(), [](const DirectoryObject o) {
-                totalSize += o.getSize();
-             });
+    for (list<DirectoryObject*>::const_iterator it = objects.begin(); it != objects.end(); ++it){
+        DirectoryObject* o = *it;
+        totalSize += o->getSize();
+    }
      return totalSize;
 }
-Directory Directory::getDirectory(string dirName)
+optional<Directory*> Directory::getDirectory(string dirName)
 {
-    for_each(objects.begin(), objects.end(), [](const DirectoryObject o) {
-        if (dynamic_cast<Directory*>(o) != nullptr){
-                Directory d = dynamic_cast<Directory*>(o);
-                if(d.name()==dirName){
-                    return d;
+    for (list<DirectoryObject*>::iterator it = objects.begin(); it != objects.end(); ++it){
+        DirectoryObject* o = *it;
+        if(o->name()==dirName){
+            Directory* responsePointer = static_cast<Directory*>(o);
+            return responsePointer;
+        }
+    }
+    return nullopt;
+}
+
+void Directory::listAll(list<Directory*>* smallDirs) const
+{
+    for_each(objects.begin(), objects.end(), [smallDirs](DirectoryObject* o)mutable {
+             cout << o->name() << "\t\t\tsize: " << o->getSize() << "\n";
+             if(o->getType()==DIRECTORY){
+                if(static_cast<Directory*>(o)->getSize()<=100000){
+                    smallDirs->insert(smallDirs->begin(),static_cast<Directory*>(o));
                 }
+                static_cast<Directory*>(o)->listAll(smallDirs);
              }
      });
 }
-void Directory::listAll()
+list<DirectoryObject*> Directory::getObjects() const
 {
-    for_each(objects.begin(), objects.end(), [](const DirectoryObject o) {
-             cout << o.name() << "\n";
-     });
+    return objects;
+}
+list<Directory*> Directory::getSubDirectories()
+{
+    list<Directory*> result;
+    for (list<DirectoryObject*>::const_iterator it = objects.begin(); it != objects.end(); ++it){
+        DirectoryObject* o = *it;
+        if(o->getType()==DIRECTORY){
+            result.insert(result.begin(), static_cast<Directory*>(o));
+        }
+    }
 }

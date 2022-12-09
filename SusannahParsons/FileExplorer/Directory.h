@@ -1,17 +1,28 @@
+#ifndef DIRECTORY_H
+#define DIRECTORY_H
+#include "FileObject.h"
 #include <string>
 #include <list>
 #include "DirectoryObject.h"
-#include "FileObject.h"
+#include <iostream>
+#include <algorithm>
+#include <optional>
 
 using namespace std;
 
 class Directory : public DirectoryObject{
 
 public:
-    void addSubObject(DirectoryObject object);
-    Directory getDirectory(string dirName);
-    void listAll();
-    int getSize();
+    Directory(){};
+    Directory(string name);
+    Directory(const Directory& rhs);
+    void addSubObject(DirectoryObject* object);
+    optional<Directory*> getDirectory(string dirName);
+    list<Directory*> getSubDirectories();
+    void listAll(list<Directory*>* smallDirs) const;
+    int getSize() const override;
+    list<DirectoryObject*> getObjects() const;
 private:
-    list<DirectoryObject> objects;
+    list<DirectoryObject*> objects;//Must be pointers, as you can't store child information in parent class
 };
+#endif
