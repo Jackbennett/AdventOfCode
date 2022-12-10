@@ -11,7 +11,9 @@ runFileProcessor(ifstream & inputFile, string fileContent){
     while (getline (inputFile, fileContent)) {
             char direction = fileContent[0];
             int moves = stoi(fileContent.substr(2));
+//            cout << direction << " " << moves << "\n";
             rp.moveHead(direction, moves);
+//            rp.showPosition();
     }
     cout << "Tail places taken " << rp.numberTailPlaces();
     return 0;

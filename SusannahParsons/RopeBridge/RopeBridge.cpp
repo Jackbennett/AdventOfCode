@@ -1,8 +1,8 @@
 #include "RopeBridge.h"
 RopeBridge::RopeBridge()
-:head(0,0),tail(0,0)//Initialise starting position
+:rope({place(0,0),place(0,0),place(0,0),place(0,0),place(0,0),place(0,0),place(0,0),place(0,0),place(0,0),place(0,0)})//Initialise starting position
 {
-    //Add start to tail places
+    //Add start to tail places visited
     place start(0,0);
     tailPlaces.insert(tailPlaces.begin(),start);
 }
@@ -12,26 +12,26 @@ void RopeBridge::moveHead(char direction, int moves)
     switch(direction){
     case 'R':
         for(int i=0; i< moves; i++){
-            head.x++;
-            moveTail();
+            rope[0].x++;
+            moveRope();
         }
         break;
     case 'L':
         for(int i=0; i< moves; i++){
-            head.x--;
-            moveTail();
+            rope[0].x--;
+            moveRope();
         }
         break;
     case 'U':
         for(int i=0; i< moves; i++){
-            head.y++;
-            moveTail();
+            rope[0].y++;
+            moveRope();
         }
         break;
     case 'D':
         for(int i=0; i< moves; i++){
-            head.y--;
-            moveTail();
+            rope[0].y--;
+            moveRope();
         }
         break;
     };
@@ -81,34 +81,43 @@ void RopeBridge::testComparePlaces()
 
 }
 
-void RopeBridge::moveTail()
+void RopeBridge::moveRope()
 {
-//    cout << "Head moves to x: " << head.x << " y: " << head.y << "\n";
-    int xDiff = tail.x-head.x;
-    int yDiff = tail.y-head.y;
-//    cout << "Difference in x " << xDiff << " difference in y " << yDiff << "\n";
-    if(abs(xDiff)>1 && abs(yDiff)==0){
-        //Move 1 x in head direction
-        (xDiff<0) ? tail.x++ : tail.x--;
-    }else if(abs(yDiff)>1 && abs(xDiff)==0){
-        //Move 1 y in head direction
-        (yDiff<0) ? tail.y++ : tail.y--;
-    }else if((abs(xDiff)>1 || abs(yDiff)>1) && (abs(xDiff)==1  || abs(yDiff)==1)){
-        //Diagonal move 1 y and 1 x in head direction
-//        cout << "Diagonal move. xDiff: " << xDiff << " yDiff: " << yDiff << "\n";
-        (xDiff<0) ? tail.x++ : tail.x--;
-        (yDiff<0) ? tail.y++ : tail.y--;
-    }else{
-        //tail is still near head
-//        cout << "Tail doesn't move\n";
-        return;
+    for(int i=1; i<rope.size(); i++){
+//        cout << rope[i-1].x << " , " << rope[i-1].y << "\n";
+//        cout << "Moving piece " << i << " with respect to " << (i-1) << "\n";
+        //0 was the head, the first piece will always be i-1, so start at i=1
+        int xDiff = rope[i].x-rope[i-1].x;
+        int yDiff = rope[i].y-rope[i-1].y;
+//        cout << "xDiff: " << xDiff << " yDiff: " << yDiff << "\n";
+        if(abs(xDiff)>1 && abs(yDiff)==0){
+            //Move 1 x in rope[i-1] direction
+            (xDiff<0) ? rope[i].x++ : rope[i].x--;
+        }else if(abs(yDiff)>1 && abs(xDiff)==0){
+            //Move 1 y in rope[i-1] direction
+            (yDiff<0) ? rope[i].y++ : rope[i].y--;
+        }else if((abs(xDiff)>1 && abs(yDiff)>0) || (abs(yDiff)>1 && abs(xDiff)>0)){
+            //Diagonal move 1 y and 1 x in rope[i-1] direction
+            (xDiff<0) ? rope[i].x++ : rope[i].x--;
+            (yDiff<0) ? rope[i].y++ : rope[i].y--;
+        }else{
+            //rope[i] is still near rope[i-1]
+            continue;
+        }
     }
-//    cout << "Tail moves to x: " << tail.x << " y: " << tail.y << "\n";
-    place newPlace(tail.x, tail.y);
+
+//    cout << "Tail moves to x: " << rope[9].x << " y: " << rope[9].y << "\n";
+    place newPlace(rope.back().x, rope.back().y);
     tailPlaces.insert(tailPlaces.begin(), newPlace);
 }
 
 int RopeBridge::numberTailPlaces()
 {
     return tailPlaces.size();
+}
+void RopeBridge::showPosition()
+{
+    for(int i = 0; i<rope.size(); i++){
+        cout << rope[i].x << "," << rope[i].y << "\n";
+    }
 }

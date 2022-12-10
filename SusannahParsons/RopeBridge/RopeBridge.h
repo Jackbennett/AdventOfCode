@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <type_traits>
+#include <vector>
 using namespace std;
 struct place {
     place(int x1, int y1)
@@ -25,20 +26,11 @@ public:
     RopeBridge();
     void moveHead(char direction, int moves);
     int numberTailPlaces();
+    void showPosition();
     void testComparePlaces();
 private:
-    void moveTail();
-    place head;
-    place tail;
-    static constexpr bool comparePlaces = [](place a, place b) {
-        if(a.x==b.x){
-                cout << "X is the same, returning y<y\n";
-            return a.y<b.y;
-        }else{
-            cout << "Returning x<x\n";
-            return a.x<b.x;
-        }
-    };
+    void moveRope();
+    vector<place> rope;
     set<place> tailPlaces;
 };
 #endif
