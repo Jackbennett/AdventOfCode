@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1670704959 source:d:\adventofcode\susannahparsons\ropebridge\main.cpp
+	<iostream>
+	<fstream>
+	<string>
+	"RopeBridge.h"
+	<set>
+
+1670704179 d:\adventofcode\susannahparsons\ropebridge\ropebridge.h
+	<set>
+	<tuple>
+	<cstdlib>
+	<iostream>
+	<type_traits>
+	<vector>
+
+1670704783 source:d:\adventofcode\susannahparsons\ropebridge\ropebridge.cpp
+	"RopeBridge.h"
+
