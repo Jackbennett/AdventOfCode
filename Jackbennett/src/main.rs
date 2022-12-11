@@ -1,9 +1,19 @@
 use std::{fs, path};
 
+pub mod backpack;
 pub mod elves;
 pub mod rps_tournament;
 
 fn main() {
+    day1();
+    println!();
+    day2();
+    println!();
+    day3();
+    println!();
+}
+
+fn day1() {
     let file = fs::read_to_string(path::Path::new("./input/Elf_Calories.txt"))
         .expect("text input file should exist");
 
@@ -45,11 +55,11 @@ fn main() {
             expedition.elves[count].energy()
         );
     }
+}
 
+fn day2() {
     let file_rps_tourny = fs::read_to_string(path::Path::new("./input/Rock_Paper_Scissors.txt"))
         .expect("Missing Day 2 Input File");
-
-    println!();
 
     let (_, tournament) = rps_tournament::parse_tournament(&file_rps_tourny).unwrap();
 
@@ -66,4 +76,21 @@ fn main() {
         "(Day 2b) Predicted outcome scores: {} if all goes to plan",
         total_predicted
     );
+}
+
+fn day3() {
+    let rucksack_audit = fs::read_to_string(path::Path::new("./input/Elf_Rucksack_Contents.txt"))
+        .expect("Missing Day 3 Input File");
+    let (_, contents) = backpack::parse_backback_contents(&rucksack_audit).unwrap();
+    let duplicates: Vec<u32> = contents
+        .iter()
+        .filter_map(|pack| backpack::find_common_item(pack))
+        .map(|item| backpack::get_item_value(item))
+        .collect();
+
+    let score: u32 = duplicates.iter().sum();
+    println!(
+        "(Day 3a) {} Total priority of duplicate items in Elves rucksacks",
+        score
+    )
 }
