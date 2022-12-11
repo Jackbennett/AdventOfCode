@@ -1,5 +1,6 @@
 use std::{fs, path};
 
+pub mod backpack;
 pub mod elves;
 pub mod rps_tournament;
 
