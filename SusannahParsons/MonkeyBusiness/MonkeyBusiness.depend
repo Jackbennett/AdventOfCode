@@ -1,0 +1,29 @@
+# depslib dependency file v1.0
+1670784313 source:d:\adventofcode\susannahparsons\monkeybusiness\main.cpp
+	<string>
+	"KeepAway.h"
+
+1670784886 d:\adventofcode\susannahparsons\monkeybusiness\keepaway.h
+	<iostream>
+	<fstream>
+	<string>
+	<sstream>
+	<string.h>
+	<iterator>
+	<vector>
+	<algorithm>
+	"Monkey.h"
+
+1670784972 d:\adventofcode\susannahparsons\monkeybusiness\monkey.h
+	<list>
+	<cmath>
+	<functional>
+	<iostream>
+	<string.h>
+
+1670784993 source:d:\adventofcode\susannahparsons\monkeybusiness\monkey.cpp
+	"Monkey.h"
+
+1670785098 source:d:\adventofcode\susannahparsons\monkeybusiness\keepaway.cpp
+	"KeepAway.h"
+
