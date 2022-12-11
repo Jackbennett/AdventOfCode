@@ -22,11 +22,9 @@ pub fn find_common_item(input: &str) -> char {
 pub fn get_item_value(item: char) -> u32 {
     let i = item as u32;
     // mask the case-bit to calculate score.
-    let lower_case = (i & 0b10_0000) == 0b0;
-    if lower_case {
-        i % 64 + 26
-    } else {
-        i % 96
+    match i & 0b10_0000 {
+        0b0 => i % 64 + 26,
+        _ => i % 96,
     }
 }
 
