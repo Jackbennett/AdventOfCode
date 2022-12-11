@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1670757251 source:d:\adventofcode\susannahparsons\crt\crt.cpp
+	"crt.h"
+
+1670757123 d:\adventofcode\susannahparsons\crt\crt.h
+	<iostream>
+	<fstream>
+	<vector>
+
+1670757283 source:d:\adventofcode\susannahparsons\crt\main.cpp
+	<iostream>
+	"crt.h"
+
