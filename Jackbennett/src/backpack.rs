@@ -6,16 +6,25 @@ pub fn parse_backback_contents(input: &str) -> IResult<&str, Vec<&str>> {
     separated_list1(line_ending, alpha1)(input)
 }
 
-pub fn find_common_item(input: &str) -> char {
+pub fn find_common_item(input: &str) -> Option<char> {
     let mid = &input.len() / 2;
     let a = &input[..mid];
     let b = &input[mid..];
-    let first: Vec<char> = a.chars().take_while(|&l| b.contains(l)).collect();
-    if first.is_empty() {
-        let second: Vec<char> = b.chars().take_while(|&l| a.contains(l)).collect();
-        second[0]
+    let mut found: Vec<char> = Vec::new();
+    for l in a.chars() {
+        if b.contains(l) {
+            found.push(l);
+        }
+    }
+    for l in b.chars() {
+        if a.contains(l) {
+            found.push(l);
+        }
+    }
+    if !found.is_empty() {
+        Some(found[0])
     } else {
-        first[0]
+        None
     }
 }
 
@@ -34,35 +43,47 @@ mod tests {
     #[test]
     fn test_one_of() {
         let input = "abcdEFGHia\r\n";
-        let parsed_file = parse_backback_contents(input);
-        let mut found = Vec::new();
-        match parsed_file {
-            Ok((_, file)) => {
-                for line in file {
-                    found.push(find_common_item(line));
-                }
-            }
-            Err(_) => todo!(),
-        };
+        let (_, parsed_file) = parse_backback_contents(&input).unwrap();
+        let found: Vec<char> = parsed_file
+            .iter()
+            .filter_map(|pack| find_common_item(pack))
+            .collect();
+
         assert_eq!(found[0], 'a');
     }
 
     #[test]
+    fn test_one_of_real() {
+        let input = "mmbclcsDHCflDDlCrzzrDWjPJvjPvqJPjfpqZQdfWd\r\n";
+        let (_, parsed_file) = parse_backback_contents(&input).unwrap();
+        let found: Vec<char> = parsed_file
+            .iter()
+            .filter_map(|pack| find_common_item(pack))
+            .collect();
+
+        assert_eq!(found[0], 'f');
+    }
+
+    #[test]
+    fn test_one_of_some() {
+        let input = "abcdEFGHia\r\nKbcdEFGHiK\r\nabcdEFGHiz\r\n";
+        let (_, parsed_file) = parse_backback_contents(&input).unwrap();
+        let found: Vec<char> = parsed_file
+            .iter()
+            .filter_map(|pack| find_common_item(pack))
+            .collect();
+        assert_eq!(found[0], 'a');
+        assert_eq!(found[1], 'K');
+        assert_eq!(found.len(), 2);
+    }
+
+    #[test]
     fn test_parsed_score() {
-        let input = "abcdEFGHia\r\nQbcdEFGHiQ\r\n";
-        let parsed_file = parse_backback_contents(input).unwrap();
-
-        let mut item: Vec<char> = Vec::new();
-        for line in parsed_file.1 {
-            item.push(find_common_item(&line));
-        }
-        assert_eq!(item, ['a', 'Q']);
-
         let lower_case = get_item_value('b');
         assert_eq!(lower_case, 2_u32);
 
-        assert_eq!(get_item_value(item[0]), 1_u32);
-        assert_eq!(get_item_value(item[1]), 43_u32);
+        assert_eq!(get_item_value('a'), 1_u32);
+        assert_eq!(get_item_value('Q'), 43_u32);
     }
 
     #[test]

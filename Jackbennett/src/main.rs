@@ -9,6 +9,8 @@ fn main() {
     println!();
     day2();
     println!();
+    day3();
+    println!();
 }
 
 fn day1() {
@@ -74,4 +76,21 @@ fn day2() {
         "(Day 2b) Predicted outcome scores: {} if all goes to plan",
         total_predicted
     );
+}
+
+fn day3() {
+    let rucksack_audit = fs::read_to_string(path::Path::new("./input/Elf_Rucksack_Contents.txt"))
+        .expect("Missing Day 3 Input File");
+    let (_, contents) = backpack::parse_backback_contents(&rucksack_audit).unwrap();
+    let duplicates: Vec<u32> = contents
+        .iter()
+        .filter_map(|pack| backpack::find_common_item(pack))
+        .map(|item| backpack::get_item_value(item))
+        .collect();
+
+    let score: u32 = duplicates.iter().sum();
+    println!(
+        "(Day 3a) {} Total priority of duplicate items in Elves rucksacks",
+        score
+    )
 }
