@@ -64,7 +64,6 @@ func moveHead(direction: Character){
 }
 
 func moveFollower(leader: ropeKnot, follower: inout ropeKnot){
-    // var follower = follower
     let xdiff = leader.x - follower.x
     let ydiff = leader.y - follower.y
     let axdiff = abs(xdiff)

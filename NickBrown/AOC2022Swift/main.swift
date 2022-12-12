@@ -110,3 +110,12 @@ func day_11(){
 day_11()
 let day11finish = CACurrentMediaTime()
 print("Day 11 execution time: \(day11finish - day10finish)")
+
+func day_12(){
+    let k = Day12(input_file: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day12.txt")
+    print("Day 12 Part 1: \(k.part1())")
+    print("Day 12 Part 2: \(k.part2())")
+}
+day_12()
+let day12finish = CACurrentMediaTime()
+print("Day 12 execution time: \(day12finish - day11finish)")
