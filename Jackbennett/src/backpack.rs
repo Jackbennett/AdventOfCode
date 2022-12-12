@@ -1,6 +1,7 @@
 use nom::{
     character::complete::alpha1, character::complete::line_ending, multi::separated_list1, IResult,
 };
+use std::collections::HashSet;
 
 pub fn parse_backback_contents(input: &str) -> IResult<&str, Vec<&str>> {
     separated_list1(line_ending, alpha1)(input)
@@ -8,24 +9,25 @@ pub fn parse_backback_contents(input: &str) -> IResult<&str, Vec<&str>> {
 
 pub fn find_common_item(input: &str) -> Option<char> {
     let mid = &input.len() / 2;
-    let a = &input[..mid];
-    let b = &input[mid..];
-    let mut found: Vec<char> = Vec::new();
-    for l in a.chars() {
-        if b.contains(l) {
-            found.push(l);
-        }
+    let mut search_space = input.chars().collect::<HashSet<_>>();
+    search_space.retain(|s| (input.matches(*s).collect::<Vec<_>>()).len() > 1);
+
+    let mut repeats = Vec::new();
+    for s in search_space {
+        repeats.push(input.match_indices(s).collect::<Vec<_>>());
     }
-    for l in b.chars() {
-        if a.contains(l) {
-            found.push(l);
-        }
+    // println!("{:#?}", repeats);
+
+    let mut found: Option<char> = None;
+    for r in repeats {
+        let above = r.iter().any(|x| x.0 >= mid);
+        let below = r.iter().any(|x| x.0 <= mid);
+        if above && below {
+            found = r[0].1.chars().next();
+            break;
+        };
     }
-    if !found.is_empty() {
-        Some(found[0])
-    } else {
-        None
-    }
+    found
 }
 
 pub fn get_item_value(item: char) -> u32 {
@@ -44,12 +46,23 @@ mod tests {
     fn test_one_of() {
         let input = "abcdEFGHia\r\n";
         let (_, parsed_file) = parse_backback_contents(&input).unwrap();
-        let found: Vec<char> = parsed_file
+        let found: Vec<_> = parsed_file
             .iter()
             .filter_map(|pack| find_common_item(pack))
             .collect();
 
         assert_eq!(found[0], 'a');
+    }
+    #[test]
+    fn test_one_of_midpoint() {
+        let input = "gbcdEjjFGHiH\r\n";
+        let (_, parsed_file) = parse_backback_contents(&input).unwrap();
+        let found: Vec<_> = parsed_file
+            .iter()
+            .filter_map(|&pack| find_common_item(&pack))
+            .collect();
+
+        assert_eq!(found[0], 'j');
     }
 
     #[test]
