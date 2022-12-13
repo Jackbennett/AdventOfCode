@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1670784313 source:d:\adventofcode\susannahparsons\monkeybusiness\main.cpp
+1670917397 source:d:\adventofcode\susannahparsons\monkeybusiness\main.cpp
 	<string>
 	"KeepAway.h"
+	<iostream>
 
-1670784886 d:\adventofcode\susannahparsons\monkeybusiness\keepaway.h
+1670917348 d:\adventofcode\susannahparsons\monkeybusiness\keepaway.h
 	<iostream>
 	<fstream>
 	<string>
@@ -14,16 +15,25 @@
 	<algorithm>
 	"Monkey.h"
 
-1670784972 d:\adventofcode\susannahparsons\monkeybusiness\monkey.h
+1670917370 d:\adventofcode\susannahparsons\monkeybusiness\monkey.h
 	<list>
 	<cmath>
 	<functional>
 	<iostream>
 	<string.h>
 
-1670784993 source:d:\adventofcode\susannahparsons\monkeybusiness\monkey.cpp
+1670917330 source:d:\adventofcode\susannahparsons\monkeybusiness\monkey.cpp
 	"Monkey.h"
 
-1670785098 source:d:\adventofcode\susannahparsons\monkeybusiness\keepaway.cpp
+1670917476 source:d:\adventofcode\susannahparsons\monkeybusiness\keepaway.cpp
 	"KeepAway.h"
+
+1670906857 d:\adventofcode\susannahparsons\monkeybusiness\bigint.h
+	<bits/stdc++.h>
+
+1670906779 d:\adventofcode\susannahparsons\monkeybusiness\bigint.hpp
+	<bits/stdc++.h>
+
+1670907163 source:d:\adventofcode\susannahparsons\monkeybusiness\bigint.cpp
+	"BigInt.h"
 

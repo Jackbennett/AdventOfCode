@@ -8,28 +8,30 @@
 using namespace std;
 class Monkey{
 public:
-    Monkey(list<int>startingItems);
-    void catchItem(int item);
+    Monkey(list<uint64_t >startingItems);
+    void catchItem(uint64_t  item);
     void takeTurn();
     void setOperands(vector<string> ops);
-    void setDivider(int div);
-    void setMonkeyIfTrue(int monkey);
-    void setMonkeyIfFalse(int monkey);
+    void setDivider(uint64_t  div);
+    void setReducer(uint64_t  red);
+    void setMonkeyIfTrue(uint64_t  monkey);
+    void setMonkeyIfFalse(uint64_t  monkey);
     void setMonkeys(vector<Monkey*> monkeys);
     void listItems();
     void showState();
-    int getTotalInspections();
+    uint64_t  getTotalInspections();
 private:
-    list<int> items;
+    list<uint64_t > items;
     vector<Monkey*> monkeys;
-    int monkeyIfTrue;
-    int monkeyIfFalse;
-    int totalInspections;
-    void inspect(list<int>::iterator old);
-    void bored(list<int>::iterator old);
-    bool test(list<int>::iterator old);
-    void throwItem(list<int>::iterator item, bool testResult);
-    int divider;
+    uint64_t  monkeyIfTrue;
+    uint64_t  monkeyIfFalse;
+    uint64_t  totalInspections;
+    void inspect(list<uint64_t >::iterator old);
+    void bored(list<uint64_t >::iterator old);
+    bool test(list<uint64_t >::iterator old);
+    void throwItem(list<uint64_t >::iterator item, bool testResult);
+    uint64_t  divider;
+    uint64_t  reducer;
     vector<string*> inspectOperands;
 };
 #endif

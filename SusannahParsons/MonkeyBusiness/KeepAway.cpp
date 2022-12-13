@@ -6,15 +6,19 @@ KeepAway::KeepAway(string file)
 
 void KeepAway::playRound()
 {
+    uint64_t  i = 0;
     for (auto & monkey : monkeys)
-  {
-    monkey->takeTurn();
-  }
+    {
+//        cout << "Monkey: " << i << "\n";
+//        monkey->listItems();
+        monkey->takeTurn();
+        i++;
+    }
 }
 
 void KeepAway::showStartingState()
 {
-    int monk = 0;
+    uint64_t  monk = 0;
     for (auto & monkey : monkeys)
   {
     cout << "Monkey " << monk << ":\n";
@@ -25,12 +29,13 @@ void KeepAway::showStartingState()
 
 void KeepAway::showState()
 {
-    vector<int> totalInspections;
-    int monk = 0;
+    vector<uint64_t > totalInspections;
+    uint64_t  monk = 0;
     for (auto & monkey : monkeys)
     {
         cout << "Monkey " << monk << ": ";
-        monkey->listItems();
+//        monkey->listItems();
+        cout << "Total inspections " << monkey->getTotalInspections() << "\n";
         totalInspections.insert(totalInspections.end(),monkey->getTotalInspections());
         monk++;
     }
@@ -45,10 +50,11 @@ void KeepAway::initialiseMonkeys(string file)
 {
     ifstream inputFile(file);
     string fileLine;
+    uint64_t  reducer = 1;
     while (getline (inputFile, fileLine)) {
             if(fileLine.find("Starting items")!=string::npos){
                 //This is a new monkey, initialise with starting items
-                list<int> startingItems;
+                list<uint64_t > startingItems;
                 string items = fileLine.substr(18);
                 char * itemschar = new char [items.length()+1];
                 strcpy (itemschar, items.c_str());
@@ -74,23 +80,25 @@ void KeepAway::initialiseMonkeys(string file)
             }
             if(fileLine.find("Test: divisible by ")!=string::npos){
                 //This is the test function
-                int divider = stoi(fileLine.substr(21));
+                uint64_t  divider = stoi(fileLine.substr(21));
                 monkeys.back()->setDivider(divider);
+                reducer *= divider;
             }
             if(fileLine.find("If true: throw to monkey")!=string::npos){
-                int monkey = stoi(fileLine.substr(29));
+                uint64_t  monkey = stoi(fileLine.substr(29));
                 monkeys.back()->setMonkeyIfTrue(monkey);
             }
             if(fileLine.find("If false: throw to monkey")!=string::npos){
-                int monkey = stoi(fileLine.substr(30));
+                uint64_t  monkey = stoi(fileLine.substr(30));
                 monkeys.back()->setMonkeyIfFalse(monkey);
             }
     }
     //Make sure all monkeys have access to the other monkeys
     for_each(monkeys.begin(), monkeys.end(),
-            [this](Monkey * monk)
+            [this, reducer](Monkey * monk)
             {
                 monk->setMonkeys(monkeys);
+                monk->setReducer(reducer);
             }
     );
     cout << "Monkeys initialised. There are " << monkeys.size() << "\n";
