@@ -1,5 +1,5 @@
 #include "Monkey.h"
-Monkey::Monkey(list<int>startingItems)
+Monkey::Monkey(list<uint64_t >startingItems)
 :items(startingItems),totalInspections(0)
 {
 
@@ -7,7 +7,7 @@ Monkey::Monkey(list<int>startingItems)
 
 void Monkey::takeTurn()
 {
-    for (list<int>::iterator it = items.begin(); it != items.end(); it++){
+    for (list<uint64_t >::iterator it = items.begin(); it != items.end(); it++){
         inspect(it);
         bored(it);
         throwItem(it, test(it));
@@ -16,76 +16,82 @@ void Monkey::takeTurn()
     };
 }
 
-void Monkey::inspect(list<int>::iterator old)
+void Monkey::inspect(list<uint64_t >::iterator old)
 {
     totalInspections++;
-    int firstOperand = (*inspectOperands[0]=="old")?*old:stoi(*inspectOperands[0]);
-    int secondOperand = ((*inspectOperands[2]=="old")?*old:stoi(*inspectOperands[2]));
+    uint64_t  firstOperand = (*inspectOperands[0]=="old")?*old:stoi(*inspectOperands[0]);
+    uint64_t  secondOperand = ((*inspectOperands[2]=="old")?*old:stoi(*inspectOperands[2]));
     string operatorString = *inspectOperands[1];
     const char* operatorchar = operatorString.c_str();
     switch(*operatorchar){
         case '+':
-            *old = (firstOperand+secondOperand);
+            *old = (firstOperand + secondOperand);
             break;
         case '-':
-            *old = (firstOperand-secondOperand);
+            *old = (firstOperand - secondOperand);
             break;
         case '*':
-            *old = (firstOperand*secondOperand);
+            *old = (firstOperand * secondOperand);
             break;
         case '/':
-            *old = (firstOperand/secondOperand);
+            *old = (firstOperand / secondOperand);
             break;
         default:
-            *old = (firstOperand+secondOperand);
+            *old = (firstOperand + secondOperand);
     }
+
 }
 
-void Monkey::bored(list<int>::iterator old)
+void Monkey::bored(list<uint64_t >::iterator old)
 {
-    *old = (floor(*old/3.0));
+    //No longer happens in part 2
+//    *old = (floor(*old/3.0));
+    //Part 2 reduce the size of the item if possible
+    *old = *old%reducer;//Reducer is a multiple of all the monkeys' test dividers
 }
 
-bool Monkey::test(list<int>::iterator old)
+bool Monkey::test(list<uint64_t >::iterator old)
 {
     return (*old%divider==0);
 }
 
-void Monkey::throwItem(list<int>::iterator item, bool testResult)
+void Monkey::throwItem(list<uint64_t >::iterator item, bool testResult)
 {
 
     //Throw it to another monkey
     if(testResult){
+//        cout << "Throwing to monkey " << monkeyIfTrue << " " << *item << " divisible by " << divider << "\n";
         monkeys[monkeyIfTrue]->catchItem(*item);
     }else{
+//        cout << "Throwing to monkey " << monkeyIfFalse << " " << *item << " not divisible by " << divider << "\n";
         monkeys[monkeyIfFalse]->catchItem(*item);
     }
 }
 
-void Monkey::catchItem(int item)
+void Monkey::catchItem(uint64_t  item)
 {
     items.insert(items.end(),item);
 }
 
 void Monkey::setOperands(vector<string> ops)
 {
-    for(int i=0; i<ops.size(); i++){
+    for(uint64_t  i=0; i<ops.size(); i++){
         string* op = new string(ops[i]);
         inspectOperands.insert(inspectOperands.end(),op);
     }
 }
 
-void Monkey::setDivider(int div)
+void Monkey::setDivider(uint64_t  div)
 {
     divider = div;
 }
 
-void Monkey::setMonkeyIfTrue(int monkey)
+void Monkey::setMonkeyIfTrue(uint64_t  monkey)
 {
     monkeyIfTrue = monkey;
 }
 
-void Monkey::setMonkeyIfFalse(int monkey)
+void Monkey::setMonkeyIfFalse(uint64_t  monkey)
 {
     monkeyIfFalse = monkey;
 }
@@ -98,7 +104,7 @@ void Monkey::setMonkeys(vector<Monkey*> monkeysvec)
 void Monkey::listItems()
 {
     for_each(items.begin(), items.end(),
-            [this](int item)
+            [this](uint64_t  item)
             {
                 cout << item << ",";
             }
@@ -116,8 +122,12 @@ void Monkey::showState()
     cout << "\t\tIf false: throw to monkey " << monkeyIfFalse << "\n";
 }
 
-int Monkey::getTotalInspections()
+uint64_t  Monkey::getTotalInspections()
 {
     return totalInspections;
+}
+void Monkey::setReducer(uint64_t  red)
+{
+    reducer = red;
 }
 

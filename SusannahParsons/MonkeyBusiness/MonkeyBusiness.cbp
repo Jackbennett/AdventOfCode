@@ -32,6 +32,12 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="BigInt.h" />
+		<Unit filename="BigInt.hpp" />
+		<Unit filename="KeepAway.cpp" />
+		<Unit filename="KeepAway.h" />
+		<Unit filename="Monkey.cpp" />
+		<Unit filename="Monkey.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
