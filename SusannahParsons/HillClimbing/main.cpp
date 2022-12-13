@@ -4,8 +4,8 @@ using namespace std;
 
 int main()
 {
-//    HeatMap h("testInput.txt");
-    HeatMap h("heatmapInput.txt");
+    HeatMap h("testInput.txt");
+//    HeatMap h("heatmapInput.txt");
     h.calculateReverseJourney();
     return 0;
 }

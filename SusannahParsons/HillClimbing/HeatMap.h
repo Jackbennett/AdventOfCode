@@ -4,64 +4,57 @@
 #include <fstream>
 #include <vector>
 #include <list>
+#include <set>
 #include <string>
 #include <iterator>
 #include <cmath>
 #include <algorithm>
 using namespace std;
-struct MapPoint{
-    MapPoint(){};
-    MapPoint(int newx, int newy, char newelevation)
-    :x(newx), y(newy), elevation(newelevation)
+struct MapNode{
+    MapNode()
+    :distanceFromSource(numeric_limits<double>::infinity()), visited(false)
+    {};
+    MapNode(int newx, int newy, char newelevation)
+    :x(newx), y(newy), elevation(newelevation), distanceFromSource(numeric_limits<double>::infinity()), elevationIndex(gradients.find(newelevation)), visited(false)
     {};
     int x;
     int y;
-    int distanceToPoint;
     char elevation;
+    int elevationIndex;
+    double distanceFromSource;
+    bool visited;
+    string gradients = "abcdefghijklmnopqrstuvwxyz";
     string toString(){
-        string mappoint = "x: " + to_string(x);
-        mappoint += " y: " + to_string(y);
-        mappoint += " elevation: " + string(1, elevation);
-        return mappoint;
+        string MapNode = "x: " + to_string(x);
+        MapNode += " y: " + to_string(y);
+        MapNode += " elevation: " + string(1, elevation);
+        return MapNode;
     };
-    friend bool operator==(const MapPoint &a, const MapPoint &b){
+    friend bool operator==(const MapNode &a, const MapNode &b){
         return (a.x==b.x && a.y==b.y);
     };
-	friend bool operator!=(const MapPoint &a, const MapPoint &b){
+	friend bool operator!=(const MapNode &a, const MapNode &b){
 	    return (!(a.x==b.x && a.y==b.y));
 	};
-	int calculateDistanceToPoint(const MapPoint &a){
-	    //a^2 + b^2 = h^2
-	    distanceToPoint = sqrt(pow(abs(x-a.x),2)+pow(abs(y-a.y),2));
-	};
-	//Allows sort by distance from a point
-	friend bool operator<(const MapPoint &a, const MapPoint &b){
-	    return a.distanceToEnd<b.distanceToEnd;
-	};
+	bool operator<(const MapNode&a,const MapNode&b){
+	    return a.distanceFromSource<b.distanceFromSource;
+	}
 };
-struct DirectionPoint{
-    DirectionPoint(){};
-    DirectionPoint(MapPoint newcentre, MapPoint newup, MapPoint newdown, MapPoint newleft, MapPoint newright)
-    :centre(newcentre), up(newup), down(newdown), left(newleft), newright(newright)
-    {};
-    MapPoint centre;
-    MapPoint up;
-    MapPoint down;
-    MapPoint left;
-    MapPoint right;
-};
+
 class HeatMap{
 public:
     HeatMap(string filename);
-    void calculateReverseJourney();
 private:
     void Initialise(string filename);
-    string gradients;
-    vector<vector<MapPoint>> elevationMap;
-    MapPoint startPosition;
-    vector<MapPoint> journey;
-    MapPoint positionWithBestSignal;
-    MapPoint nextMove(bool towardsE);
-    MapPoint nearest(char elevation);
+    int xLimit;
+    int yLimit;
+    vector<vector<MapNode>> elevationMap;//elevationMap[x][y]
+    set<MapNode> unvisitedNodes;//unvisitedNodes
+    MapNode startPosition;
+    MapNode endPosition;
+    void deleteFromUnvisited(MapNode mp);
+    list<MapNode> getAdjacentNodes();
+    void runDjikstrasAlgorithm();
+    list<MapNode> shortestPath;
 };
 #endif
