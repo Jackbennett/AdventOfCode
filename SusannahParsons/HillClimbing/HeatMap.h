@@ -58,7 +58,7 @@ struct MapNode{
         string MapNode = "x: " + to_string(loc.x);
         MapNode += " y: " + to_string(loc.y);
         MapNode += " elevation: " + string(1, elevation);
-        MapNode += " distance from source: " + string(1, distanceFromSource);
+        MapNode += " distance from source: " + to_string(distanceFromSource);
         return MapNode;
     };
     friend bool operator==(const MapNode &a, const MapNode &b){

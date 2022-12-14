@@ -44,6 +44,7 @@ void HeatMap::Initialise(string filename)
     }
     deleteFromUnvisited(startPosition);
     startPosition->shortestpath.insert(startPosition->shortestpath.end(),Location(startPosition->loc));
+    startPosition->distanceFromSource = 0;
     xLimit = elevationMap.size();
     yLimit = elevationMap[0].size();
     cout << "S is at " << startPosition->toString() << "\n";
@@ -104,26 +105,21 @@ void HeatMap::runDjikstrasAlgorithm(MapNode* nodeToAnalyse)
 {
         //Get the adjacent nodes for each member of shortestpath
         set<MapNode*> unvisitedNodesWithDistance;
-        cout << "Getting nodes adjacent to shortest path of node to analyse\n";
         for (auto & location : nodeToAnalyse->shortestpath) {
             MapNode* node = (elevationMap[location.x][location.y]);
             list<MapNode*> adjacentNodes = getAdjacentNodes(node);
             //Set the distances
             for (auto & adjacentNode : adjacentNodes) {
-                    cout << adjacentNode->toString() << "\n";
                 if(adjacentNode->distanceFromSource!=numeric_limits<double>::infinity()){
-                    cout << "Already has distance from another route " << adjacentNode->distanceFromSource << "\n";
                     //Node already had a distance from another route. Is this one better?
                     if(adjacentNode->distanceFromSource>node->distanceFromSource+1){
                         //It is better, so update the distance
-                        elevationMap[adjacentNode->loc.x][adjacentNode->loc.y]->distanceFromSource = node->distanceFromSource+1;
+                        adjacentNode->distanceFromSource=node->distanceFromSource+1;
                     }
                 }else{
-                    cout << "Setting distance from source\n";
-                    elevationMap[adjacentNode->loc.x][adjacentNode->loc.y]->distanceFromSource = node->distanceFromSource+1;
-                    cout << "Checking the change has appeared in elevationMap\n" << elevationMap[adjacentNode->loc.x][adjacentNode->loc.y]->toString() << "\n";
+                    adjacentNode->distanceFromSource=node->distanceFromSource+1;
                 }
-                unvisitedNodesWithDistance.insert(unvisitedNodesWithDistance.end(),elevationMap[adjacentNode->loc.x][adjacentNode->loc.y]);
+                unvisitedNodesWithDistance.insert(unvisitedNodesWithDistance.end(),adjacentNode);
             }
         }
         if(unvisitedNodesWithDistance.size()==0){
@@ -132,28 +128,21 @@ void HeatMap::runDjikstrasAlgorithm(MapNode* nodeToAnalyse)
         //Sort by distance from source
         //Put all the nodes in a vector, as it's easier to sort and access (set is for uniqueness of nodes)
         vector<MapNode*> sortingNodes;
-        cout << "Nodes to choose from for next analysis\n";
         for (auto & unvisitedNode : unvisitedNodesWithDistance) {
             sortingNodes.insert(sortingNodes.end(),unvisitedNode);
-            cout << unvisitedNode->toString() <<  "\n";
         }
 
         sort(sortingNodes.begin(), sortingNodes.end(), sortByDistanceFunc);
         //Now analyse closest node
         MapNode* newNodeToAnalyse = sortingNodes.front();
-        cout << "Node chosen\n" << newNodeToAnalyse->toString() << "\n";
         //Add the shortest path
         for (auto & location : nodeToAnalyse->shortestpath){
-            elevationMap[newNodeToAnalyse->loc.x][newNodeToAnalyse->loc.y]->shortestpath.insert(elevationMap[newNodeToAnalyse->loc.x][newNodeToAnalyse->loc.y]->shortestpath.end(),location);
             newNodeToAnalyse->shortestpath.insert(newNodeToAnalyse->shortestpath.end(),location);
         }
-        elevationMap[newNodeToAnalyse->loc.x][newNodeToAnalyse->loc.y]->shortestpath.insert(elevationMap[newNodeToAnalyse->loc.x][newNodeToAnalyse->loc.y]->shortestpath.end(),Location(newNodeToAnalyse->loc));
         newNodeToAnalyse->shortestpath.insert(newNodeToAnalyse->shortestpath.end(),Location(newNodeToAnalyse->loc));
         //Delete from unvisited
         deleteFromUnvisited(newNodeToAnalyse);
         //Mark as visited
-        elevationMap[newNodeToAnalyse->loc.x][newNodeToAnalyse->loc.y]->visited = true;
         newNodeToAnalyse->visited = true;
-        return;//Finish early to debug
         runDjikstrasAlgorithm(newNodeToAnalyse);
 }
