@@ -4,41 +4,78 @@
 #include <fstream>
 #include <vector>
 #include <list>
-#include <set>
 #include <string>
 #include <iterator>
 #include <cmath>
 #include <algorithm>
+#include <limits>
+#include <set>
 using namespace std;
+struct Location{
+    Location(){};
+    Location(int newx, int newy)
+    :x(newx),y(newy)
+    {};
+    Location(const Location& l)
+    :x(l.x),y(l.y)
+    {};
+    int x;
+    int y;
+    const string toString(){
+        string locationString = "x: " + to_string(x);
+        locationString += " y: " + to_string(y);
+        return locationString;
+    };
+    friend bool operator< (const Location& a, const Location& b){
+        if(a.x==b.x){
+            return a.y<b.y;
+        }
+	    return (a.x < b.x);
+	};
+};
 struct MapNode{
     MapNode()
     :distanceFromSource(numeric_limits<double>::infinity()), visited(false)
     {};
     MapNode(int newx, int newy, char newelevation)
-    :x(newx), y(newy), elevation(newelevation), distanceFromSource(numeric_limits<double>::infinity()), elevationIndex(gradients.find(newelevation)), visited(false)
-    {};
-    int x;
-    int y;
+    :loc(newx,newy), elevation(newelevation), distanceFromSource(numeric_limits<double>::infinity()), visited(false)
+    {
+        elevationIndex = gradients.find(newelevation);
+    };
+    using difference_type = std::ptrdiff_t;
+    using value_type = MapNode;
+    using pointer = MapNode*;
+    using reference = MapNode&;
+    using iterator_category = std::output_iterator_tag;
+    Location loc;
     char elevation;
     int elevationIndex;
     double distanceFromSource;
     bool visited;
+    list<Location> shortestpath;
     string gradients = "abcdefghijklmnopqrstuvwxyz";
-    string toString(){
-        string MapNode = "x: " + to_string(x);
-        MapNode += " y: " + to_string(y);
+    const string toString(){
+        string MapNode = "x: " + to_string(loc.x);
+        MapNode += " y: " + to_string(loc.y);
         MapNode += " elevation: " + string(1, elevation);
+        MapNode += " distance from source: " + string(1, distanceFromSource);
         return MapNode;
     };
     friend bool operator==(const MapNode &a, const MapNode &b){
-        return (a.x==b.x && a.y==b.y);
+        return (a.loc.x==b.loc.x && a.loc.y==b.loc.y);
     };
 	friend bool operator!=(const MapNode &a, const MapNode &b){
-	    return (!(a.x==b.x && a.y==b.y));
+	    return (!(a.loc.x==b.loc.x && a.loc.y==b.loc.y));
 	};
-	bool operator<(const MapNode&a,const MapNode&b){
-	    return a.distanceFromSource<b.distanceFromSource;
-	}
+	friend bool operator< (const MapNode& a, const MapNode& b){
+	    return (a.loc < b.loc);
+	};
+	//Comparator function for sorting by distance
+	static auto constexpr compareByDistance = [](const MapNode& a,
+                    const MapNode& b) -> bool
+    {
+        return (a.distanceFromSource < b.distanceFromSource);
+    };
 };
 
 class HeatMap{
@@ -48,13 +85,12 @@ private:
     void Initialise(string filename);
     int xLimit;
     int yLimit;
-    vector<vector<MapNode>> elevationMap;//elevationMap[x][y]
-    set<MapNode> unvisitedNodes;//unvisitedNodes
-    MapNode startPosition;
-    MapNode endPosition;
-    void deleteFromUnvisited(MapNode mp);
-    list<MapNode> getAdjacentNodes();
-    void runDjikstrasAlgorithm();
-    list<MapNode> shortestPath;
+    vector<vector<MapNode*>> elevationMap;//elevationMap[x][y]
+    list<MapNode*> unvisitedNodes;//unvisitedNodes
+    MapNode* startPosition;
+    MapNode* endPosition;
+    void deleteFromUnvisited(MapNode* mp);
+    list<MapNode*> getAdjacentNodes(MapNode* mp);
+    void runDjikstrasAlgorithm(MapNode* nodeToAnalyse);
 };
 #endif
