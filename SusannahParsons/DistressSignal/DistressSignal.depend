@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1671083617 source:d:\adventofcode\susannahparsons\distresssignal\main.cpp
+	<iostream>
+	"SignalParser.h"
+
+1671083815 d:\adventofcode\susannahparsons\distresssignal\signalparser.h
+	<string>
+	<iostream>
+	<fstream>
+	<vector>
+
+1671083988 source:d:\adventofcode\susannahparsons\distresssignal\signalparser.cpp
+	"SignalParser.h"
+
