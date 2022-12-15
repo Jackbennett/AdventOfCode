@@ -73,12 +73,11 @@ struct MapNode{
 	friend bool operator< (const MapNode& a, const MapNode& b){
 	    return (a.loc < b.loc);
 	};
-	//Comparator function for sorting by distance
-	static auto constexpr compareByDistance = [](const MapNode& a,
-                    const MapNode& b) -> bool
-    {
-        return (a.distanceFromSource < b.distanceFromSource);
-    };
+	void reset(){
+	    shortestpath.clear();
+	    distanceFromSource = numeric_limits<double>::infinity();
+	    visited=false;
+	};
 };
 
 class HeatMap{
@@ -96,5 +95,7 @@ private:
     void deleteFromUnvisited(MapNode* mp);
     list<MapNode*> getAdjacentNodes(MapNode* mp);
     void runDjikstrasAlgorithm(MapNode* nodeToAnalyse);
+    void resetMap();
+    void prepareStart(MapNode* mp);
 };
 #endif

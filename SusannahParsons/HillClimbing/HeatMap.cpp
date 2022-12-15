@@ -2,8 +2,26 @@
 HeatMap::HeatMap(string filename)
 {
     Initialise(filename);
-    runDjikstrasAlgorithm(startPosition);
-    cout << "Displaying shortest path size " << endPosition->distanceFromSource << "\n";
+    //Get all start points at elevation 'a'
+    list<MapNode*> possibleStarts;
+    for (auto & vec : elevationMap) {
+        for (auto & node : vec) {
+                if(node->elevation=='a'){
+                    possibleStarts.insert(possibleStarts.begin(),node);
+                }
+        }
+    }
+    list<double> shortestPaths;
+    //Now get the shortest path for each start and see which is shortest
+    for (auto & startPos : possibleStarts) {
+        prepareStart(startPos);
+        runDjikstrasAlgorithm(startPosition);
+        shortestPaths.insert(shortestPaths.begin(),endPosition->distanceFromSource);
+        resetMap();
+    }
+    //Sort the list
+    shortestPaths.sort();
+    cout << "Displaying shortest path size " << shortestPaths.front() << "\n";
 //    for (auto itr = endPosition->shortestpath.begin();
 //        itr != endPosition->shortestpath.end(); itr++)
 //    {
@@ -41,14 +59,8 @@ void HeatMap::Initialise(string filename)
         }
         rowNum++;
     }
-    deleteFromUnvisited(startPosition);
-    startPosition->shortestpath.insert(startPosition->shortestpath.end(),Location(startPosition->loc));
-    startPosition->distanceFromSource = 0;
-    startPosition->visited = true;
     xLimit = elevationMap.size();
     yLimit = elevationMap[0].size();
-    cout << "S is at " << startPosition->toString() << "\n";
-    cout << "E is at " << endPosition->toString() << "\n";
 }
 
 void HeatMap::deleteFromUnvisited(MapNode* mp)
@@ -177,3 +189,26 @@ void HeatMap::runDjikstrasAlgorithm(MapNode* nodeToAnalyse)
         newNodeToAnalyse->visited = true;
         runDjikstrasAlgorithm(newNodeToAnalyse);
 }
+
+void HeatMap::resetMap()
+{
+    unvisitedNodes.clear();
+    unvisitedNodesWithDistanceOnPath.clear();
+    //Iterate elevation map, putting everything back to start position
+    for (auto & vec : elevationMap) {
+        for (auto & node : vec) {
+            node->reset();
+            unvisitedNodes.insert(unvisitedNodes.begin(), node);
+        }
+    }
+}
+
+void HeatMap::prepareStart(MapNode* sp)
+{
+    deleteFromUnvisited(sp);
+    sp->shortestpath.insert(sp->shortestpath.end(),Location(sp->loc));
+    sp->distanceFromSource = 0;
+    sp->visited = true;
+    startPosition = sp;
+}
+
