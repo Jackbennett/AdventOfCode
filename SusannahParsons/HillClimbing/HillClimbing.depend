@@ -1,0 +1,20 @@
+# depslib dependency file v1.0
+1671056190 source:d:\adventofcode\susannahparsons\hillclimbing\main.cpp
+	<iostream>
+	"HeatMap.h"
+
+1671078384 d:\adventofcode\susannahparsons\hillclimbing\heatmap.h
+	<iostream>
+	<fstream>
+	<vector>
+	<list>
+	<string>
+	<iterator>
+	<cmath>
+	<algorithm>
+	<limits>
+	<set>
+
+1671077227 source:d:\adventofcode\susannahparsons\hillclimbing\heatmap.cpp
+	"HeatMap.h"
+
