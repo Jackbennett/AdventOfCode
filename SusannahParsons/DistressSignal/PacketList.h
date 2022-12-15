@@ -11,7 +11,7 @@ class PacketList{
 public:
     PacketList();
     PacketList(string pl);
-
+    string originalPacket;
     vector<string> listContent;
     variant<int, string, size_t> getItem();
 private:

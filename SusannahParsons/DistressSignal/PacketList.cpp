@@ -5,6 +5,7 @@ PacketList::PacketList()
 }
 
 PacketList::PacketList(string pl)
+:originalPacket(pl)
 {
     getListContent(pl);
 }
