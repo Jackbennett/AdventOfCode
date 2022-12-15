@@ -4,7 +4,7 @@ using namespace std;
 
 int main()
 {
-    HeatMap h("testInput.txt");
-//    HeatMap h("heatmapInput.txt");
+//    HeatMap h("testInput.txt");
+    HeatMap h("heatmapInput.txt");
     return 0;
 }

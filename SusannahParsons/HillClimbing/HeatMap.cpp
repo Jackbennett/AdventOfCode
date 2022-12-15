@@ -1,15 +1,14 @@
 #include "HeatMap.h"
 HeatMap::HeatMap(string filename)
 {
-    cout << "Initialising...\n";
     Initialise(filename);
-    cout << "There are " << elevationMap.size() << " columns of data\n";
-    cout << "There are " << unvisitedNodes.size() << " unvisited nodes\n";
     runDjikstrasAlgorithm(startPosition);
-    cout << "Displaying shortest path size " << endPosition->shortestpath.size() << "\n";
-    for (auto & node : endPosition->shortestpath) {
-        cout << node.toString() << "\n";
-    }
+    cout << "Displaying shortest path size " << endPosition->distanceFromSource << "\n";
+//    for (auto itr = endPosition->shortestpath.begin();
+//        itr != endPosition->shortestpath.end(); itr++)
+//    {
+//        cout << itr->toString() << "\n";
+//    }
 }
 
 void HeatMap::Initialise(string filename)
@@ -45,6 +44,7 @@ void HeatMap::Initialise(string filename)
     deleteFromUnvisited(startPosition);
     startPosition->shortestpath.insert(startPosition->shortestpath.end(),Location(startPosition->loc));
     startPosition->distanceFromSource = 0;
+    startPosition->visited = true;
     xLimit = elevationMap.size();
     yLimit = elevationMap[0].size();
     cout << "S is at " << startPosition->toString() << "\n";
@@ -59,6 +59,13 @@ void HeatMap::deleteFromUnvisited(MapNode* mp)
         unvisitedNodes.erase(it);
         break;
     }
+    for (set<MapNode*>::iterator it = unvisitedNodesWithDistanceOnPath.begin(); it != unvisitedNodesWithDistanceOnPath.end(); it++)
+    if (*it == mp)
+    {
+        unvisitedNodesWithDistanceOnPath.erase(it);
+        break;
+    }
+
 }
 
 list<MapNode*> HeatMap::getAdjacentNodes(MapNode* mp){
@@ -103,43 +110,67 @@ bool sortByDistanceFunc (MapNode* i,MapNode* j) { return (i->distanceFromSource<
 
 void HeatMap::runDjikstrasAlgorithm(MapNode* nodeToAnalyse)
 {
+    bool debug = false;
         //Get the adjacent nodes for each member of shortestpath
-        set<MapNode*> unvisitedNodesWithDistance;
         for (auto & location : nodeToAnalyse->shortestpath) {
+//            if (debug) {
+//                cout << "Got shortest path\n";
+//            }
             MapNode* node = (elevationMap[location.x][location.y]);
             list<MapNode*> adjacentNodes = getAdjacentNodes(node);
+            if (debug) {
+                cout << "Got adjacent Nodes size: " << adjacentNodes.size() << "\n";
+            }
             //Set the distances
             for (auto & adjacentNode : adjacentNodes) {
+                   if (debug) {
+                    cout << "Analysing " << adjacentNode->toString() << "\n";
+                   }
                 if(adjacentNode->distanceFromSource!=numeric_limits<double>::infinity()){
                     //Node already had a distance from another route. Is this one better?
                     if(adjacentNode->distanceFromSource>node->distanceFromSource+1){
-                        //It is better, so update the distance
+                            if (debug) {
+                                cout << "Found a better path " << adjacentNode->toString() << "\n";
+                                cout << node->toString() << "\n";
+                            }
+                        //It is better, so update the distance and the shortest path
                         adjacentNode->distanceFromSource=node->distanceFromSource+1;
+                        adjacentNode->shortestpath.clear();
+                        for (auto & location : node->shortestpath){
+                            adjacentNode->shortestpath.insert(adjacentNode->shortestpath.end(),location);
+                        }
+                        adjacentNode->shortestpath.insert(adjacentNode->shortestpath.end(),Location(adjacentNode->loc));
                     }
                 }else{
                     adjacentNode->distanceFromSource=node->distanceFromSource+1;
+                    adjacentNode->shortestpath.clear();
+                    for (auto & location : node->shortestpath){
+                        adjacentNode->shortestpath.insert(adjacentNode->shortestpath.end(),location);
+                    }
+                    adjacentNode->shortestpath.insert(adjacentNode->shortestpath.end(),Location(adjacentNode->loc));
                 }
-                unvisitedNodesWithDistance.insert(unvisitedNodesWithDistance.end(),adjacentNode);
+                unvisitedNodesWithDistanceOnPath.insert(unvisitedNodesWithDistanceOnPath.end(),adjacentNode);
+                if (debug) {
+                    cout << "Finished with adjacent node " << adjacentNode->toString() << "\n";
+                }
             }
         }
-        if(unvisitedNodesWithDistance.size()==0){
+        if(unvisitedNodesWithDistanceOnPath.size()==0){
             return;
         }
         //Sort by distance from source
         //Put all the nodes in a vector, as it's easier to sort and access (set is for uniqueness of nodes)
         vector<MapNode*> sortingNodes;
-        for (auto & unvisitedNode : unvisitedNodesWithDistance) {
+        for (auto & unvisitedNode : unvisitedNodesWithDistanceOnPath) {
             sortingNodes.insert(sortingNodes.end(),unvisitedNode);
         }
 
         sort(sortingNodes.begin(), sortingNodes.end(), sortByDistanceFunc);
         //Now analyse closest node
         MapNode* newNodeToAnalyse = sortingNodes.front();
-        //Add the shortest path
-        for (auto & location : nodeToAnalyse->shortestpath){
-            newNodeToAnalyse->shortestpath.insert(newNodeToAnalyse->shortestpath.end(),location);
+        if (debug) {
+            cout << "Chosen next node " << newNodeToAnalyse->toString() << "\n";
         }
-        newNodeToAnalyse->shortestpath.insert(newNodeToAnalyse->shortestpath.end(),Location(newNodeToAnalyse->loc));
         //Delete from unvisited
         deleteFromUnvisited(newNodeToAnalyse);
         //Mark as visited

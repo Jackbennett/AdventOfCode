@@ -21,9 +21,9 @@ struct Location{
     {};
     int x;
     int y;
-    const string toString(){
-        string locationString = "x: " + to_string(x);
-        locationString += " y: " + to_string(y);
+    string toString() const {
+        string locationString = "(" + to_string(x);
+        locationString += "," + to_string(y) + ")";
         return locationString;
     };
     friend bool operator< (const Location& a, const Location& b){
@@ -54,11 +54,14 @@ struct MapNode{
     bool visited;
     list<Location> shortestpath;
     string gradients = "abcdefghijklmnopqrstuvwxyz";
-    const string toString(){
+    const string toString() const {
         string MapNode = "x: " + to_string(loc.x);
         MapNode += " y: " + to_string(loc.y);
         MapNode += " elevation: " + string(1, elevation);
-        MapNode += " distance from source: " + to_string(distanceFromSource);
+        MapNode += " distance from source: " + to_string(distanceFromSource) + "\n";
+        for (auto & location : shortestpath) {
+            MapNode += location.toString() + " ";
+        }
         return MapNode;
     };
     friend bool operator==(const MapNode &a, const MapNode &b){
@@ -87,6 +90,7 @@ private:
     int yLimit;
     vector<vector<MapNode*>> elevationMap;//elevationMap[x][y]
     list<MapNode*> unvisitedNodes;//unvisitedNodes
+    set<MapNode*> unvisitedNodesWithDistanceOnPath;
     MapNode* startPosition;
     MapNode* endPosition;
     void deleteFromUnvisited(MapNode* mp);
