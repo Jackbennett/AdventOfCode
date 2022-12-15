@@ -1,14 +1,36 @@
 # depslib dependency file v1.0
-1671083617 source:d:\adventofcode\susannahparsons\distresssignal\main.cpp
+1671084084 source:d:\adventofcode\susannahparsons\distresssignal\main.cpp
 	<iostream>
 	"SignalParser.h"
 
-1671083815 d:\adventofcode\susannahparsons\distresssignal\signalparser.h
+1671117637 d:\adventofcode\susannahparsons\distresssignal\signalparser.h
 	<string>
 	<iostream>
 	<fstream>
-	<vector>
+	"PacketList.h"
+	"PacketPair.h"
+	<variant>
 
-1671083988 source:d:\adventofcode\susannahparsons\distresssignal\signalparser.cpp
+1671140082 source:d:\adventofcode\susannahparsons\distresssignal\signalparser.cpp
 	"SignalParser.h"
+
+1671138555 d:\adventofcode\susannahparsons\distresssignal\packetlist.h
+	<vector>
+	<string.h>
+	<string>
+	<variant>
+	<iostream>
+	<deque>
+
+1671134302 d:\adventofcode\susannahparsons\distresssignal\packetpair.h
+	<string>
+	<variant>
+	<iostream>
+	"PacketList.h"
+
+1671140030 source:d:\adventofcode\susannahparsons\distresssignal\packetlist.cpp
+	"PacketList.h"
+
+1671140013 source:d:\adventofcode\susannahparsons\distresssignal\packetpair.cpp
+	"PacketPair.h"
 
