@@ -73,49 +73,52 @@ struct RockStructure{
         }
         return false;
     };
-    Location* getSetLocation(string locstring){
+    Location getSetLocation(string locstring){
         char location[locstring.size() + 1];
         strcpy(location, locstring.c_str());
         string x(strtok(location, ","));
         string y(strtok(NULL, ","));
-        Location* l = new Location(stoi(x),stoi(y));
-        lines.insert(lines.end(),*l);
+        Location l = Location(stoi(x),stoi(y));
+        lines.insert(lines.end(),l);
         startLine = endLine;
         endLine = l;
-        if(startLine != nullptr){
-            allRocks.insert(allRocks.end(),*endLine);
-            if(startLine->x==endLine->x){
+        if(secondCoordFound){
+            allRocks.insert(allRocks.end(),endLine);
+            if(startLine.x==endLine.x){
                 //It's a vertical line
-                int addition = (endLine->y > startLine->y) ? -1 : 1;
-                int newY = endLine->y + addition;
-                while(newY != startLine->y){
-                    allRocks.insert(allRocks.end(),Location(endLine->x, newY));
+                int addition = (endLine.y > startLine.y) ? -1 : 1;
+                int newY = endLine.y + addition;
+                while(newY != startLine.y){
+                    allRocks.insert(allRocks.end(),Location(endLine.x, newY));
                     newY = newY + addition;
                 }
-                allRocks.insert(allRocks.end(),*startLine);
+                allRocks.insert(allRocks.end(),startLine);
             }else{
                 //Horizontal line
-                int addition = (endLine->x > startLine->x) ? -1 : 1;
-                int newX = endLine->x + addition;
-                while(newX != startLine->x){
-                    allRocks.insert(allRocks.end(),Location(newX, endLine->y));
+                int addition = (endLine.x > startLine.x) ? -1 : 1;
+                int newX = endLine.x + addition;
+                while(newX != startLine.x){
+                    allRocks.insert(allRocks.end(),Location(newX, endLine.y));
                     newX = newX + addition;
                 }
-                allRocks.insert(allRocks.end(),*startLine);
+                allRocks.insert(allRocks.end(),startLine);
             }
+        }else{
+            secondCoordFound = true;
         }
         return l;
     };
 private:
-    Location* startLine;
-    Location* endLine = nullptr;
+    bool secondCoordFound = false;
+    Location startLine;
+    Location endLine;
 };
 class CaveScan{
 public:
     CaveScan(string filename);
     void toString() const;
 private:
-    void dropSand(Location* sand, bool debug);
+    void dropSand(Location sand, int counter);
     bool sandFlowsIntoVoid = false;
     vector<RockStructure> rockStructures;
     vector<vector<Tile>> cave;
@@ -123,7 +126,7 @@ private:
     int xMax;
     int yMin;
     int yMax;
-    int sandNumber = 0;
+    uint64_t sandNumber = 0;
     Location entryPoint = Location(500,0);
     bool locationIsRock(Location l);
     Location convertCaveLocToVectorLoc(Location l);

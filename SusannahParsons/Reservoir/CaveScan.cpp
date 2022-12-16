@@ -10,9 +10,9 @@ CaveScan::CaveScan(string filename)
         string delimiter = " -> ";
         string locstring = fileLine.substr(0, fileLine.find(delimiter));
         while(locstring.size()>0){
-            Location* l = rockStructure.getSetLocation(locstring);
-            xRange.insert(xRange.end(), l->x);
-            yRange.insert(yRange.end(), l->y);
+            Location l = rockStructure.getSetLocation(locstring);
+            xRange.insert(xRange.end(), l.x);
+            yRange.insert(yRange.end(), l.y);
             //Delete old locstring string and first delimiter from fileLine and search for next
             fileLine.erase(0, locstring.size()+4);
             locstring = fileLine.substr(0, fileLine.find(delimiter));
@@ -53,7 +53,9 @@ CaveScan::CaveScan(string filename)
         }
     }
     cout << "\n";
-    dropSand(new Location(convertCaveLocToVectorLoc(entryPoint)),false);
+    while(!sandFlowsIntoVoid){
+        dropSand(Location(convertCaveLocToVectorLoc(entryPoint)),0);
+    }
     toString();
     cout << sandNumber << " grains of sand landed\n";
 }
@@ -89,51 +91,49 @@ void CaveScan::toString() const
     cout << "\n";
 }
 
-void CaveScan::dropSand(Location* sand, bool debug)
+void CaveScan::dropSand(Location sand, int counter)
 {
+    bool debug = false;
     //Try to drop down
-    if(sand->y+1 > (cave[0].size()-1)){
+    if(sand.y+1 > (cave[0].size()-1)){
         sandFlowsIntoVoid = true;
-    }else if(cave[sand->x][sand->y+1].type == Tile::AIR){
+    }else if(cave[sand.x][sand.y+1].type == Tile::AIR){
         if(debug){
-            cout << "Sand drops down " << sand->toString() << "\n";
+            cout << "Sand drops down " << sand.toString() << "\n";
         }
-        sand->y++;
+        sand.y++;
     }//Try to drop diagonal down and left
-    else if(sand->x-1 < 0){
+    else if(sand.x-1 < 0){
         sandFlowsIntoVoid = true;
     }
-    else if(cave[sand->x-1][sand->y+1].type == Tile::AIR){
+    else if(cave[sand.x-1][sand.y+1].type == Tile::AIR){
         if(debug){
-            cout << "Sand drops left " << sand->toString() << "\n";
+            cout << "Sand drops left " << sand.toString() << "\n";
         }
-        sand->x--;
-        sand->y++;
+        sand.x--;
+        sand.y++;
     }//Try to drop diagonal down and right
-    else if(sand->x+1 > cave.size()-1){
+    else if(sand.x+1 > cave.size()-1){
         sandFlowsIntoVoid = true;
     }
-    else if(cave[sand->x+1][sand->y+1].type == Tile::AIR){
+    else if(cave[sand.x+1][sand.y+1].type == Tile::AIR){
         if(debug){
-            cout << "Sand drops right " << sand->toString() << "\n";
+            cout << "Sand drops right " << sand.toString() << "\n";
         }
-        sand->x++;
-        sand->y++;
+        sand.x++;
+        sand.y++;
     }//Can't move, sand comes to rest
     else{
         if(debug){
-            cout << "Sand comes to rest " << sand->toString() << "\n";
+            cout << "Sand comes to rest " << sand.toString() << "\n";
         }
-        cave[sand->x][sand->y].type = Tile::SAND;
-        delete sand;
-        Location* sand = new Location(convertCaveLocToVectorLoc(entryPoint));
+        cave[sand.x][sand.y].type = Tile::SAND;
+        sand = Location(convertCaveLocToVectorLoc(entryPoint));
         sandNumber++;
-        dropSand(sand,debug);
+        dropSand(sand,counter);
     }
-    if(sandNumber>350){
-        sandFlowsIntoVoid = true;
-    }
-    if(!sandFlowsIntoVoid){
-        dropSand(sand,debug);
+    if(!sandFlowsIntoVoid && counter<200){
+        counter++;
+        dropSand(sand,counter);
     }
 }
