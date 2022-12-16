@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1671224291 source:d:\adventofcode\susannahparsons\reservoir\main.cpp
+	"CaveScan.h"
+
+1671226357 d:\adventofcode\susannahparsons\reservoir\cavescan.h
+	<iostream>
+	<fstream>
+	<string>
+	<string.h>
+	<vector>
+	<list>
+
+1671223134 source:d:\adventofcode\susannahparsons\reservoir\cavescan.cpp
+	"CaveScan.h"
+
