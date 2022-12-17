@@ -4,13 +4,19 @@
 
 use std::{fs, path};
 
-pub mod backpack;
-pub mod elves;
-pub mod rps_tournament;
-pub mod task_section;
+mod backpack;
+mod elves;
+mod rps_tournament;
+mod supply_stack;
+mod task_section;
 
 type OneStar = u32;
 type TwoStar = (u32, u32);
+
+pub fn day5() {
+    let _stacks =
+        fs::read_to_string("./input/Elf_Supply_Stacks.txt").expect("Missing Day 5 input file");
+}
 
 pub fn day4() -> TwoStar {
     let section_list = fs::read_to_string(path::Path::new("./input/Elf_Section_Assignment.txt"))
