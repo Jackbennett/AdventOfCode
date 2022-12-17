@@ -62,8 +62,8 @@ impl Round {
             Ordering::Less => Result::LOSS,
         }
     }
-    pub fn score(&self) -> usize {
-        self.choice as usize + self.result() as usize
+    pub fn score(&self) -> u32 {
+        self.choice as u32 + self.result() as u32
     }
 }
 
@@ -108,8 +108,8 @@ impl Predict {
             },
         }
     }
-    pub fn score(&self) -> usize {
-        self.choice() as usize + self.target as usize
+    pub fn score(&self) -> u32 {
+        self.choice() as u32 + self.target as u32
     }
 }
 
