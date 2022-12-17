@@ -96,8 +96,44 @@ print("Day 9 execution time: \(day9finish - day8finish)")
 func day_10(){
     let i = day10(file10: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day10.txt")
     print("Day 10 Part 1: \(i.0)")
-    print("Day 10 Part 2:\n\(i.1)\n")
+    print("Day 10 Part 2:\n\n\(i.1)\n")
 }
  day_10()
 let day10finish = CACurrentMediaTime()
 print("Day 10 execution time: \(day10finish - day9finish)")
+
+func day_11(){
+    let j = day11(input_file: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day11.txt")
+    print("Day 11 Part 1: \(j.part1())")
+    print("Day 11 Part 2: \(j.part2())")
+}
+day_11()
+let day11finish = CACurrentMediaTime()
+print("Day 11 execution time: \(day11finish - day10finish)")
+
+func day_12(){
+    let k = Day12(input_file: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day12.txt")
+    print("Day 12 Part 1: \(k.part1())")
+    print("Day 12 Part 2: \(k.part2())")
+}
+day_12()
+let day12finish = CACurrentMediaTime()
+print("Day 12 execution time: \(day12finish - day11finish)")
+
+func day_13(){
+    print("Abandoned day 13 for now :(")
+}
+day_13()
+let day13finish = CACurrentMediaTime()
+print("Day 13 execution time: \(day13finish - day12finish)")
+
+func day_14(){
+    let m = Day14(filename: "/Users/Nick/Documents/GitHub/AdventOfCode/NickBrown/AOC2022Swift/inputs/day14.txt")
+    print("Day 14 Part 1: \(m.sandCountpt1)")
+    print("Day 14 Part 2: \(m.sandCountpt2)")
+}
+day_14()
+let day14finish = CACurrentMediaTime()
+print("Day 14 execution time: \(day14finish - day13finish)")
+
+    
