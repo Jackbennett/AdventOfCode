@@ -1,8 +1,13 @@
+// not using macros at the moment
+// #[macro_use]
+// extern crate nom;
+
 use std::{fs, path};
 
 pub mod backpack;
 pub mod elves;
 pub mod rps_tournament;
+pub mod task_section;
 
 fn main() {
     day1();
@@ -11,9 +16,20 @@ fn main() {
     println!();
     day3();
     println!();
+    day4();
+    println!();
 }
 
-fn day1() {
+type OneStar = u32;
+type TwoStar = (u32, u32);
+
+// fn load_text<T where T impl parse>(path: &str) -> R {
+//     /// TODO: generic file loader & Parser
+//     let file = fs::read_to_string(path::Path::new(path)).expect("text input file should exist");
+//     T::parse(&file)
+// }
+
+fn day1() -> TwoStar {
     let file = fs::read_to_string(path::Path::new("./input/Elf_Calories.txt"))
         .expect("text input file should exist");
 
@@ -55,15 +71,17 @@ fn day1() {
             expedition.elves[count].energy()
         );
     }
+
+    (most_calories, top_3_calories)
 }
 
-fn day2() {
+fn day2() -> TwoStar {
     let file_rps_tourny = fs::read_to_string(path::Path::new("./input/Rock_Paper_Scissors.txt"))
         .expect("Missing Day 2 Input File");
 
     let (_, tournament) = rps_tournament::parse_tournament(&file_rps_tourny).unwrap();
 
-    let total_to_plan: usize = tournament.iter().map(|t| t.score()).sum();
+    let total_to_plan: u32 = tournament.iter().map(|t| t.score()).sum();
 
     println!(
         "(Day 2a) Tournament Scores: {} if all goes to plan",
@@ -71,14 +89,16 @@ fn day2() {
     );
 
     let (_, prediction) = rps_tournament::parse_prediction(&file_rps_tourny).unwrap();
-    let total_predicted: usize = prediction.iter().map(|t| t.score()).sum();
+    let total_predicted: u32 = prediction.iter().map(|t| t.score()).sum();
     println!(
         "(Day 2b) Predicted outcome scores: {} if all goes to plan",
         total_predicted
     );
+
+    (total_to_plan, total_predicted)
 }
 
-fn day3() {
+fn day3() -> OneStar {
     let rucksack_audit = fs::read_to_string(path::Path::new("./input/Elf_Rucksack_Contents.txt"))
         .expect("Missing Day 3 Input File");
     let (_, contents) = backpack::parse_backback_contents(&rucksack_audit).unwrap();
@@ -92,5 +112,70 @@ fn day3() {
     println!(
         "(Day 3a) {} Total priority of duplicate items in Elves rucksacks",
         score
-    )
+    );
+
+    score
+}
+
+fn day4() -> TwoStar {
+    let section_list = fs::read_to_string(path::Path::new("./input/Elf_Section_Assignment.txt"))
+        .expect("Missing Day 4 Input File");
+    let (_, sections) =
+        task_section::parse(&section_list).expect("Parsing error within file format");
+    let contained_pairs: u32 = sections
+        .iter()
+        .filter(|range| task_section::subrange(range))
+        .count()
+        .try_into()
+        .unwrap();
+    println!(
+        "(Day 4a) {} assignments where one range fully contains the other",
+        contained_pairs
+    );
+
+    let overlapped_pairs: u32 = sections
+        .iter()
+        .filter(|asignment| task_section::overlap_range(asignment))
+        .count()
+        .try_into()
+        .unwrap();
+    println!(
+        "(Day 4b) {} assignments where any overlaps the other",
+        overlapped_pairs
+    );
+
+    (contained_pairs, overlapped_pairs)
+}
+
+#[cfg(test)]
+mod tests {
+    /// Final checks to hold answer for future refactoring.
+    use super::*;
+
+    #[test]
+    fn answer_day1() {
+        let (part_1, part_2) = day1();
+        assert_eq!(part_1, 71023);
+        assert_eq!(part_2, 206289);
+    }
+
+    #[test]
+    fn answer_day2() {
+        let (part_1, part_2) = day2();
+        assert_eq!(part_1, 8890);
+        assert_eq!(part_2, 10238);
+    }
+
+    #[test]
+    fn answer_day3() {
+        let part_1 = day3();
+        assert_eq!(part_1, 8088);
+    }
+
+    #[test]
+    fn answer_day4() {
+        let (part_1, part_2) = day4();
+        assert_eq!(part_1, 487);
+        assert_eq!(part_2, 849);
+    }
 }
