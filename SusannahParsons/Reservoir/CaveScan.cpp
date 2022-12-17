@@ -28,16 +28,16 @@ CaveScan::CaveScan(string filename)
     xMax = xRange.back();
     yMin = yRange.front();
     yMax = yRange.back();
+    yMax = yMax+2;//Add the floor
     cout << "Initialising cave " << "(" << xMin << "," << yMin << ")(" << xMax << "," << yMax << ")\n";
     for(int xnum = 0; xnum <= (xMax-xMin); xnum++){
         cave.insert(cave.end(),vector<Tile>());
     }
     for(int yVal = yMin; yVal<=yMax; yVal++){
-            cout << "\n";
         for(int xVal = xMin; xVal<=xMax; xVal++){
             Location l(xVal, yVal);
             Tile::TYPE type;
-            if(locationIsRock(l)){
+            if(locationIsRock(l) || yVal==yMax){
                 type = Tile::ROCK;
             }else{
                 if(l.x==entryPoint.x && l.y==entryPoint.y){
@@ -46,15 +46,15 @@ CaveScan::CaveScan(string filename)
                     type = Tile::AIR;
                 }
             }
-            Tile t(l,type);
-            cout << t.toString();
+            Tile t(type);
             Location vecLoc(convertCaveLocToVectorLoc(l));
             cave[vecLoc.x].insert(cave[vecLoc.x].end(),t);
         }
     }
     cout << "\n";
-    while(!sandFlowsIntoVoid){
-        dropSand(Location(convertCaveLocToVectorLoc(entryPoint)),0);
+    toString();
+    while(!sandBlocksEntryPoint){
+        dropSand(Location(convertCaveLocToVectorLoc(entryPoint)));
     }
     toString();
     cout << sandNumber << " grains of sand landed\n";
@@ -91,20 +91,24 @@ void CaveScan::toString() const
     cout << "\n";
 }
 
-void CaveScan::dropSand(Location sand, int counter)
+void CaveScan::dropSand(Location sand)
 {
     bool debug = false;
+    bool sandFinishedFalling = false;
     //Try to drop down
-    if(sand.y+1 > (cave[0].size()-1)){
-        sandFlowsIntoVoid = true;
-    }else if(cave[sand.x][sand.y+1].type == Tile::AIR){
+    if(cave[sand.x][sand.y+1].type == Tile::AIR){
         if(debug){
             cout << "Sand drops down " << sand.toString() << "\n";
         }
         sand.y++;
     }//Try to drop diagonal down and left
     else if(sand.x-1 < 0){
-        sandFlowsIntoVoid = true;
+        addColumn(true);
+        sand.x++;//Sand is now in the column to the right
+        if(cave[sand.x-1][sand.y+1].type == Tile::AIR){
+            sand.x--;
+            sand.y++;
+        }
     }
     else if(cave[sand.x-1][sand.y+1].type == Tile::AIR){
         if(debug){
@@ -114,7 +118,11 @@ void CaveScan::dropSand(Location sand, int counter)
         sand.y++;
     }//Try to drop diagonal down and right
     else if(sand.x+1 > cave.size()-1){
-        sandFlowsIntoVoid = true;
+        addColumn(false);
+        if(cave[sand.x+1][sand.y+1].type == Tile::AIR){
+            sand.x++;
+            sand.y++;
+        }
     }
     else if(cave[sand.x+1][sand.y+1].type == Tile::AIR){
         if(debug){
@@ -128,12 +136,31 @@ void CaveScan::dropSand(Location sand, int counter)
             cout << "Sand comes to rest " << sand.toString() << "\n";
         }
         cave[sand.x][sand.y].type = Tile::SAND;
-        sand = Location(convertCaveLocToVectorLoc(entryPoint));
+        sandFinishedFalling = true;
         sandNumber++;
-        dropSand(sand,counter);
+        sandBlocksEntryPoint = (convertVectorLocToCaveLog(sand)==entryPoint);
     }
-    if(!sandFlowsIntoVoid && counter<200){
-        counter++;
-        dropSand(sand,counter);
+    if(!sandFinishedFalling){
+        dropSand(sand);
+    }
+}
+
+void CaveScan::addColumn(bool isLeft)
+{
+    vector<Tile> newColumn;
+    for(int y=0; y <= (yMax-yMin); y++){
+        if(y+yMin==yMax){
+            newColumn.insert(newColumn.end(),Tile(Tile::ROCK));
+        }else{
+            newColumn.insert(newColumn.end(),Tile(Tile::AIR));
+        }
+    }
+
+    if(isLeft){
+        cave.insert(cave.begin(), newColumn);
+        xMin--;
+    }else{
+        cave.insert(cave.end(), newColumn);
+        xMax++;
     }
 }

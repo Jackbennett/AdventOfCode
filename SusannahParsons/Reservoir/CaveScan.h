@@ -39,10 +39,9 @@ struct Tile{
         AIR
     };
     Tile(){};
-    Tile(Location newLoc, TYPE newType)
-    :loc(newLoc), type(newType)
+    Tile(TYPE newType)
+    :type(newType)
     {};
-    Location loc;
     TYPE type;
     string toString() const
     {
@@ -56,10 +55,6 @@ struct Tile{
             return ".";
         }
         return "";
-    };
-    friend bool operator< (const Tile& t1, const Tile& t2)
-    {
-        return t1.loc<t2.loc;
     };
 };
 struct RockStructure{
@@ -118,8 +113,9 @@ public:
     CaveScan(string filename);
     void toString() const;
 private:
-    void dropSand(Location sand, int counter);
+    void dropSand(Location sand);
     bool sandFlowsIntoVoid = false;
+    bool sandBlocksEntryPoint = false;
     vector<RockStructure> rockStructures;
     vector<vector<Tile>> cave;
     int xMin;
@@ -131,5 +127,6 @@ private:
     bool locationIsRock(Location l);
     Location convertCaveLocToVectorLoc(Location l);
     Location convertVectorLocToCaveLog(Location l);
+    void addColumn(bool isLeft);
 };
 #endif // CAVESCAN_H
