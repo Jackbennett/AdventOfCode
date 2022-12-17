@@ -20,9 +20,9 @@ class Day14{
     init(filename: String){
         lines = try! String(contentsOfFile: filename).components(separatedBy: "\n")
         
-        for l in lines{
-            let line = l.components(separatedBy: " -> ").map { $0.components(separatedBy: ",").map {Int($0)!} }
-            for i in 0..<(line.count-1){
+        for l: String in lines{
+            let line: [[Int]] = l.components(separatedBy: " -> ").map { $0.components(separatedBy: ",").map {Int($0)!} }
+            for i: Int in 0..<(line.count-1){
                 if line[i][0] > line[i + 1][0] || line[i][1] > line[i + 1][1]{
                     lineStart = line[i + 1]
                     lineEnd = line[i]
@@ -34,13 +34,13 @@ class Day14{
                 
                 // x's are equal, vertical line
                 if lineStart[0] == lineEnd[0]{
-                    for j in lineStart[1]...lineEnd[1]{
+                    for j: Int in lineStart[1]...lineEnd[1]{
                         Rocks.insert([lineStart[0], j])
                     }
                 }
                 
                 else{
-                    for j in lineStart[0]...lineEnd[0]{
+                    for j: Int in lineStart[0]...lineEnd[0]{
                         Rocks.insert([j, lineStart[1]])
                     }
                 }
