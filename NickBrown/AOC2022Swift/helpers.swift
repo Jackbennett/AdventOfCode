@@ -21,3 +21,43 @@ class AdventOfCodeDay{
         data = file_contents.components(separatedBy: split)
     }
 }
+
+public struct Queue<T> {
+  fileprivate var array: [T?] = [T?]()
+  fileprivate var head: Int = 0
+  
+  public var isEmpty: Bool {
+    return count == 0
+  }
+
+  public var count: Int {
+    return array.count - head
+  }
+  
+  public mutating func enqueue(_ element: T) {
+    array.append(element)
+  }
+  
+  public mutating func dequeue() -> T? {
+    guard head < array.count, let element: T = array[head] else { return nil }
+
+    array[head] = nil
+    head += 1
+
+    let percentage: Double = Double(head)/Double(array.count)
+    if array.count > 50 && percentage > 0.25 {
+      array.removeFirst(head)
+      head = 0
+    }
+    
+    return element
+  }
+  
+  public var front: T? {
+    if isEmpty {
+      return nil
+    } else {
+      return array[head]
+    }
+  }
+}
