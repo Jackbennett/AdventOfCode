@@ -15,7 +15,7 @@ struct Start{
 class Day12{
     var Grid: [[Character]] = []
     let data: [String]
-    var starts: [Start] = []
+    var starts = Queue<Start>()
     var Part1Start: Start = Start(position: [0, 0], distance: 0)
     var Seen: Set<[Int]> = []
     var part2starts: [Start] = []
@@ -57,10 +57,10 @@ class Day12{
         return distances.min()!
     }
     func Search(start_point: Start)->Int{
-        starts = []
-        starts.append(start_point)
+        starts = Queue<Start>()
+        starts.enqueue(start_point)
         while !starts.isEmpty{
-            let point = starts.removeFirst()
+            let point = starts.dequeue()!
             if point.position == end.position{
                 return point.distance
             }
@@ -75,7 +75,7 @@ class Day12{
                     0 <= point.position[1] + move.1 &&
                     point.position[1] + move.1 < Grid[0].count &&
                     (getIntFromChar(char: Grid[point.position[0] + move.0][point.position[1] + move.1]) - getIntFromChar(char: Grid[point.position[0]][point.position[1]])) <= 1){
-                    starts.append(Start(position: [point.position[0] + move.0, point.position[1] + move.1], distance: point.distance + 1))
+                    starts.enqueue(Start(position: [point.position[0] + move.0, point.position[1] + move.1], distance: point.distance + 1))
                 }
             }
         }
