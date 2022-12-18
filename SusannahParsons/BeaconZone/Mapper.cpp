@@ -1,5 +1,6 @@
 #include "Mapper.h"
-Mapper::Mapper(string fileName, int rowToCheck)
+Mapper::Mapper(string fileName, int rowToCheck, int newmaxXY)
+:maxXY(newmaxXY)
 {
     ifstream inputStream(fileName);
     string fileLine;
@@ -38,15 +39,54 @@ Mapper::Mapper(string fileName, int rowToCheck)
         beacon = new Beacon();
     }
     cout << "Sensors and beacons initialised\n";
-    set<int> cover = amountSensorsCoverRow(rowToCheck);
-    //Remove beacons
-    for(auto beacon : beacons){
-        if(beacon.y==rowToCheck){
-            cover.erase(beacon.x);
+
+//    set<int> cover = amountSensorsCoverRow(rowToCheck);//Part 1 answer
+//    //Remove beacons
+//    for(auto beacon : beacons){
+//        if(beacon.y==rowToCheck){
+//            cover.erase(beacon.x);
+//        }
+//    }
+//    //Everything else we know there are no beacons
+//    cout << "There are " << cover.size() << " tiles with definitely no beacons.\n";
+
+    //Check using limits rather than each square
+    //Iterate rows
+    for(int row=minXY; row<=maxXY; row++){
+        variant<int,bool> gapx = findGapInCoverage(row);
+        if(holds_alternative<int>(gapx)){
+            uint64_t col = get<int>(gapx);
+            cout << "Found beacon! x " << col << " y " << row << "\n";
+            cout << "Tuning frequency: " << (col * 4000000 + row) << "\n";
+            break;
         }
     }
-    //Everything else we know there are no beacons
-    cout << "There are " << cover.size() << " tiles with definitely no beacons.\n";
+}
+
+variant<int,bool> Mapper::findGapInCoverage(int rowy)
+{
+    set<Range> ranges;
+    for(auto sensor: sensors){
+        if(sensor.coversRow(rowy)){
+            Range newRange = sensor.getXRangeCovered(rowy);
+            //Keep values within limits
+            newRange.minVal = (newRange.minVal < minXY) ? minXY : newRange.minVal;
+            newRange.maxVal = (newRange.maxVal > maxXY) ? maxXY : newRange.maxVal;
+            ranges.insert(ranges.end(),newRange);
+        }
+    }
+    set<Range> mergedRanges;
+    //How to merge the ranges?
+    Range mergedRange = *ranges.begin();
+    for(auto range : ranges){
+        if(mergedRange.hasOverlap(range)){
+            mergedRange = get<Range>(mergedRange.mergeRange(range));
+        }else{
+            //There's a gap!! We know there is only one, so just add one to the first range max and return
+            return mergedRange.maxVal + 1;
+        }
+    }
+    return false;
 }
 
 set<int> Mapper::amountSensorsCoverRow(int rowy)

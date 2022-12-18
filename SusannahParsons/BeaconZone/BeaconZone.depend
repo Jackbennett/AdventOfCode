@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1671353991 source:d:\adventofcode\susannahparsons\beaconzone\main.cpp
+1671377794 source:d:\adventofcode\susannahparsons\beaconzone\main.cpp
 	<iostream>
 	"Mapper.h"
 
@@ -17,7 +17,7 @@
 1671350754 source:d:\adventofcode\susannahparsons\beaconzone\tunnels.cpp
 	"Tunnels.h"
 
-1671354033 d:\adventofcode\susannahparsons\beaconzone\mapper.h
+1671377702 d:\adventofcode\susannahparsons\beaconzone\mapper.h
 	<iostream>
 	<fstream>
 	<string>
@@ -25,7 +25,8 @@
 	<set>
 	<algorithm>
 	<stdlib.h>
+	<variant>
 
-1671353316 source:d:\adventofcode\susannahparsons\beaconzone\mapper.cpp
+1671377752 source:d:\adventofcode\susannahparsons\beaconzone\mapper.cpp
 	"Mapper.h"
 
