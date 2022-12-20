@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1671522096 source:d:\adventofcode\susannahparsons\pressurerelease\main.cpp
+	<iostream>
+	"StepCalculator.h"
+
+1671520355 d:\adventofcode\susannahparsons\pressurerelease\stepcalculator.h
+	<iostream>
+	<fstream>
+	<string>
+	<string.h>
+	<limits>
+	<set>
+	<vector>
+	<algorithm>
+
+1671518376 source:d:\adventofcode\susannahparsons\pressurerelease\stepcalculator.cpp
+	"StepCalculator.h"
+
