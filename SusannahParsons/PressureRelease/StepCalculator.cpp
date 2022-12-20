@@ -15,7 +15,7 @@ StepCalculator::StepCalculator(string fileName)
         {
             if(itemNumber==2){
                 //Valve name
-                v->name = stringItem;
+                v->valveName = stringItem;
             }
             if(itemNumber==6){
                 //Flow rate
@@ -31,38 +31,96 @@ StepCalculator::StepCalculator(string fileName)
         valves.insert(valves.end(), *v);
     }
     cout << "Initialised valves\n";
+    //Part 2 answer is too high 5137. Also not 2920. And not 3138. Need to run my turn and elephant turn concurrently in time by each step or won't work....
     //While there are still unopened valves
     uint64_t currentPressure=0;
     uint64_t totalPressure=0;
     int time=1;
-    Valve* nextValve = new Valve(getNextValve("AA"));
-    while(unopenedValves() && time<30){
-        for(int minutes=1; minutes<nextValve->timeCost(); minutes++){
-            cout << "Time " << time << " Moved\nCurrent pressure: " << currentPressure << "\n";
-            totalPressure = totalPressure + currentPressure;
-            time++;
-        }
-        cout << "Time " << time << " Opening valve " << nextValve->toString() << "\nCurrent pressure: " << currentPressure << "\n";
-        totalPressure = totalPressure + currentPressure;
-        currentPressure = currentPressure + nextValve->benefit();
-        findValve(nextValve->name).opened = true;
-        time++;
-        nextValve = new Valve(getNextValve(string(nextValve->name)));
+    //I'm starting at A and going to the best valve
+    Valve* elephantTargetValve = new Valve(getNextValve("AA",false));
+    vector<Valve> openedValves = open(findValve(elephantTargetValve->valveName));
+    cout << "\n\nOPENED\n";
+    for(auto valv : valves){
+        cout << valv.toString() << "\n";
     }
-    if(time<30){
-        while(time!=31){
-    //        cout << "Time " << time << " Current pressure: " << currentPressure << "\n";
-            totalPressure = totalPressure + currentPressure;
-            time++;
+    Valve* myTargetValve = new Valve(getNextValve("AA", false));
+    close(openedValves);
+    cout << "\n\nCLOSED\n";
+    for(auto valv : valves){
+        cout << valv.toString() << "\n";
+    }
+
+    int myMoves =myTargetValve->distance();
+    int elephantMoves =elephantTargetValve->distance();
+    Valve* myCurrentPos = &findValve(myTargetValve->shortestPath.at(0).valveName);
+    Valve* elephantCurrentPos = &findValve(elephantTargetValve->shortestPath.at(0).valveName);
+    while(time!=27){
+        cout << "Minute " << time << "\n";
+        totalPressure = totalPressure + currentPressure;
+
+        int myPathIndx = myTargetValve->shortestPath.size()-myMoves;
+        int elephantPathIndx = elephantTargetValve->shortestPath.size()-elephantMoves;
+
+        cout << "My target " << myTargetValve->toString() << " size " << myTargetValve->shortestPath.size() << " my moves " << myMoves << "\n";
+        cout << "Elephant target " << elephantTargetValve->toString() << " size " << elephantTargetValve->shortestPath.size() << " elephant moves " << elephantMoves << "\n";
+
+        cout << "My current position " <<myCurrentPos->toString() << "\n";
+        if(!myCurrentPos->opened && myCurrentPos->flowrate>0){
+            Valve* vToOpen = &findValve(myCurrentPos->valveName);
+            cout << "I open valve " << vToOpen->valveName << "\n";
+            findValve(vToOpen->valveName).opened = true;
+            currentPressure = currentPressure + vToOpen->flowrate;
+        }else if(myPathIndx < myTargetValve->pathEndIdx()){
+            cout << "I move along path\n";
+            myMoves--;
+            myPathIndx = myTargetValve->shortestPath.size()-myMoves;
+            myCurrentPos = &findValve(myTargetValve->shortestPath.at(myPathIndx).valveName);
+            cout << "I move to " << myCurrentPos->valveName << " at path index " << myPathIndx << "\n";
+        }else if(myPathIndx == myTargetValve->pathEndIdx()){
+            cout << "I find the next valve and move to the first place\n";
+            //Get the next valve
+            vector<Valve> openedValves = open(findValve(elephantTargetValve->valveName));
+            myTargetValve = new Valve(getNextValve(myTargetValve->valveName, false));
+            close(openedValves);
+            myMoves = myTargetValve->pathEndIdx();
+            myPathIndx = myTargetValve->shortestPath.size()-myMoves;
+            cout << "My target " << myTargetValve->toString() << " size " << myTargetValve->shortestPath.size() << " my moves " << myMoves << "\n";
+            myCurrentPos = &findValve(myTargetValve->shortestPath.at(myPathIndx).valveName);
+            cout << "I move to " << myCurrentPos->valveName << " at path index " << myPathIndx << "\n";
         }
+        cout << "Elephant current position " <<elephantCurrentPos->toString() << "\n";
+
+        if(!elephantCurrentPos->opened && elephantCurrentPos->flowrate>0){
+            Valve* vToOpen = &findValve(elephantCurrentPos->valveName);
+            cout << "Elephant opens valve " << vToOpen->valveName << "\n";
+            findValve(vToOpen->valveName).opened = true;
+            currentPressure = currentPressure + vToOpen->flowrate;
+        }else if(elephantPathIndx < elephantTargetValve->pathEndIdx()){
+            cout << "Elephant moves along path\n";
+            elephantMoves--;
+            elephantPathIndx = elephantTargetValve->shortestPath.size()-elephantMoves;
+            elephantCurrentPos = &findValve(elephantTargetValve->shortestPath.at(elephantPathIndx).valveName);
+            cout << "Elephant moves to " << elephantCurrentPos->valveName << " at path index " << elephantPathIndx << "\n";
+        }else if(elephantPathIndx == elephantTargetValve->pathEndIdx()){
+            cout << "Elephant finds the next valve and moves to the first place\n";
+            //Get the next valve.
+            vector<Valve> openedValves = open(findValve(myTargetValve->valveName));
+            elephantTargetValve = new Valve(getNextValve(elephantTargetValve->valveName, false));
+            close(openedValves);
+            elephantMoves = elephantTargetValve->pathEndIdx();
+            elephantPathIndx = elephantTargetValve->shortestPath.size()-elephantMoves;
+            cout << "Elephant target " << elephantTargetValve->toString() << " size " << elephantTargetValve->shortestPath.size() << " elephant moves " << elephantMoves << "\n";
+            elephantCurrentPos = &findValve(elephantTargetValve->shortestPath.at(elephantPathIndx).valveName);
+            cout << "Elephant moves to " << elephantCurrentPos->valveName << " at path index " << elephantPathIndx << "\n";
+        }
+        time++;
     }
     cout << "Finished running. Total pressure released: " << totalPressure << "\n";
 
 }
 
-Valve& StepCalculator::getNextValve(string startValve)
+Valve& StepCalculator::getNextValve(string startValve, bool debug)
 {
-    bool debug = false;
     if(debug){
         cout << "Running get next valve, resetting Djikstra\n";
     }
@@ -74,9 +132,10 @@ Valve& StepCalculator::getNextValve(string startValve)
     vstart.distanceFromStart = 0;
     int countRuns(0);
     //Find the shortest paths
-    runDjikstra(vstart.name,countRuns);
+    runDjikstra(vstart.valveName,countRuns);
     if(debug){
-        cout << "Shortest paths found, sorting by time cost\n";
+        cout << "\n\nShortest paths found\n";
+        cout <<"sorting by time cost\n";
     }
     struct sortByCost{
         bool operator() (Valve v1,Valve v2){
@@ -88,6 +147,7 @@ Valve& StepCalculator::getNextValve(string startValve)
     if(debug){
         cout << "Sorted, now find the best valve\n";
     }
+
     Valve* bestValve = &valves.front();
     if(debug){
         cout << "Starting with valve " << bestValve->toString() << "\n";
@@ -96,7 +156,6 @@ Valve& StepCalculator::getNextValve(string startValve)
         if(debug){
             cout << "Current best valve " << bestValve->toString() << "\n" << v.toString() << "\n";
         }
-
         if(v.timeCost()==bestValve->timeCost()){
             if(debug)
             {
@@ -120,7 +179,7 @@ Valve& StepCalculator::getNextValve(string startValve)
                 bestValve = &v;
             }
             if(debug){
-                cout << "Valve won the comparison: " << v.toString() << "\nBest valve is now " << bestValve->toString() << "\n";
+                cout << "Valve " << bestValve->valveName << " won the comparison: " << v.toString() << "\nBest valve is now " << bestValve->toString() << "\n";
             }
         }
     }
@@ -133,7 +192,7 @@ Valve& StepCalculator::getNextValve(string startValve)
 bool StepCalculator::unopenedValves()
 {
     for(auto v : valves){
-        if(!v.opened && v.benefit()>0){
+        if(!v.opened && v.flowrate>0){
             return true;
         }
     }
@@ -157,10 +216,11 @@ void StepCalculator::runDjikstra(string startvalve, int& countruns)
 //    }
     bool debug = false;
     if(debug){
+        cout << "\n\nDJIKSTRA\n";
         cout << "Running with valve " << v.toString() << "\n";
     }
-    if(v.shortestPath.size()==0 || v.shortestPath.back() != v.name){
-        v.shortestPath.insert(v.shortestPath.end(),v.name);
+    if(v.shortestPath.size()==0 || v.shortestPath.back().valveName != v.valveName){
+        v.shortestPath.insert(v.shortestPath.end(),v);
         if(debug){
             cout << "Added to shortest path " << v.toString() << "\n";
         }
@@ -168,12 +228,12 @@ void StepCalculator::runDjikstra(string startvalve, int& countruns)
     //Mark start point as visited
 
     if(debug){
-        cout << "Setting visited to true " << v.name << "\n";
+        cout << "Setting visited to true " << v.valveName << "\n";
     }
     v.visited = true;
     if(debug){
         Valve v2 = findValve(startvalve);
-        cout << ((v2.visited)?" Visited " : " Not visited ") << v2.name << "\n";
+        cout << ((v2.visited)?" Visited " : " Not visited ") << v2.valveName << "\n";
     }
     if(debug){
         cout << "Adjacent valves:\n";
@@ -194,10 +254,15 @@ void StepCalculator::runDjikstra(string startvalve, int& countruns)
             adj.distanceFromStart = v.distanceFromStart + 1;
             adj.shortestPath.clear();
             for(auto pathValve: v.shortestPath){
-                adj.shortestPath.insert(adj.shortestPath.end(),string(pathValve));
+                adj.shortestPath.insert(adj.shortestPath.end(),findValve(pathValve.valveName));
             }
-            adj.shortestPath.insert(adj.shortestPath.end(),string(adjacent));
-            unique(adj.shortestPath.begin(), adj.shortestPath.end());
+            adj.shortestPath.insert(adj.shortestPath.end(),findValve(adj.valveName));
+            struct {
+                bool operator() (Valve v1,Valve v2){
+                    return v1.valveName < v2.valveName;
+                }
+            } uniqueByName;
+            unique(adj.shortestPath.begin(), adj.shortestPath.end(), uniqueByName);
         }
         if(debug){
             cout << "\n";
@@ -216,7 +281,7 @@ void StepCalculator::runDjikstra(string startvalve, int& countruns)
     vector<Valve> possibleValves;
     for(auto& pathValve : visited){
         if(debug){
-            cout << "Valve on path " << pathValve->name << "\n";
+            cout << "Valve on path " << pathValve->valveName << "\n";
         }
         set<string> adjacentValves = pathValve->reachableValves;
         for(auto adjvalvStr : adjacentValves){
@@ -225,16 +290,16 @@ void StepCalculator::runDjikstra(string startvalve, int& countruns)
             }
             Valve& possibleValve = findValve(adjvalvStr);
             if(debug){
-                cout << "Possible valve: " << possibleValve.name << "\n";
+                cout << "Possible valve: " << possibleValve.valveName << "\n";
             }
             if(!possibleValve.visited){
                 if(debug){
-                    cout << possibleValve.name << " has not been visited\n";
+                    cout << possibleValve.valveName << " has not been visited\n";
                 }
                 possibleValves.insert(possibleValves.end(),possibleValve);
             }else{
                 if(debug){
-                    cout << possibleValve.name << " has already been visited\n";
+                    cout << possibleValve.valveName << " has already been visited\n";
                 }
             }
         }
@@ -253,13 +318,13 @@ void StepCalculator::runDjikstra(string startvalve, int& countruns)
             }
         }
         countruns++;
-        runDjikstra(nextValve->name, countruns);
+        runDjikstra(nextValve->valveName, countruns);
     }
 }
 Valve& StepCalculator::findValve(string vName)
 {
     for(vector<Valve>::iterator it = valves.begin(); it<valves.end(); it++){
-        if(it->name==vName){
+        if(it->valveName==vName){
             Valve& vPoint = *it;
             return vPoint;
         }
@@ -273,4 +338,25 @@ void StepCalculator::showValves()
         cout << v.toString() << "\n";
     }
     cout << "\n";
+}
+vector<Valve> StepCalculator::open(Valve v)
+{
+    vector<Valve> lOpened;
+    for(auto &vcopy : v.shortestPath){
+        if(!vcopy.opened && vcopy.flowrate>0){
+            Valve& vToOpen = findValve(vcopy.valveName);
+            cout << "Opening " << vToOpen.valveName << "\n";
+            vToOpen.opened = true;
+            lOpened.insert(lOpened.end(),vToOpen);
+        }
+    }
+    return lOpened;
+}
+
+void StepCalculator::close(vector<Valve> v)
+{
+    for(auto vcopy : v){
+        cout << "Closing " << vcopy.valveName << "\n";
+        findValve(vcopy.valveName).opened = false;
+    }
 }
