@@ -1,6 +1,23 @@
 #include "CubeScan.h"
 CubeScan::CubeScan(string fileName)
 {
+    initialise(fileName);
+    int totalExposedSides = 0;
+    for(auto & cube : cubes){
+        totalExposedSides = totalExposedSides + cube.exposedSides;
+    }
+    cout << "Total exposed cube sides " << totalExposedSides << "\n";
+    findTrappedAir();
+    totalExposedSides = 0;
+    for(auto & cube : cubes){
+        totalExposedSides = totalExposedSides + cube.exposedSides;
+    }
+    //4026 is too high
+    cout << "Recalculated total exposed cube sides " << totalExposedSides << "\n";
+}
+
+void CubeScan::initialise(string fileName)
+{
     ifstream inputs(fileName);
     string fileLine;
     while(getline(inputs, fileLine)){
@@ -28,12 +45,50 @@ CubeScan::CubeScan(string fileName)
         //Add cube to content
         cubes.insert(cubes.end(), *c);
     }
-    int totalExposedSides = 0;
-    for(auto & cube : cubes){
-        totalExposedSides = totalExposedSides + cube.exposedSides;
-    }
-    cout << "Total exposed cube sides " << totalExposedSides << "\n";
+    //Initialise limits
+    sort(cubes.begin(), cubes.end(), sortByX);
+    xMin = cubes.front().loc.x;
+    xMax = cubes.back().loc.x;
+    sort(cubes.begin(), cubes.end(), sortByY);
+    yMin = cubes.front().loc.y;
+    yMax = cubes.back().loc.y;
+    sort(cubes.begin(), cubes.end(), sortByZ);
+    zMin = cubes.front().loc.z;
+    zMax = cubes.back().loc.z;
 }
+
+void CubeScan::findTrappedAir()
+{
+    for(int xval=xMin; xval<=xMax; xval++){
+        for(int yval=yMin; yval<=yMax; yval++){
+            for(int zval=zMin; zval<=zMax; zval++){
+                Cube possibleTrappedAir = Cube(xval, yval, zval);
+                if(!isPartOfDroplet(possibleTrappedAir)){
+                    //Definitely air
+                    if(possibleTrappedAir.exposedSides==0){
+                        //Trapped air!
+                        cout << "Found trapped air at " << possibleTrappedAir.getString() << "\n";
+                        checkTouches(possibleTrappedAir);
+                    }
+                }
+            }
+        }
+    }
+}
+
+bool CubeScan::isPartOfDroplet(Cube& c)
+{
+    for (auto & drop : cubes){
+        if(c==drop){
+            return true;
+        }else{
+            if(drop.touches(c)){
+                c.exposedSides--;
+            }
+        }
+    }
+}
+
 
 void CubeScan::checkTouches(Cube& c)
 {
