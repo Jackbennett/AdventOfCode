@@ -1,7 +1,7 @@
+#![allow(dead_code)]
 // not using macros at the moment
 // #[macro_use]
 // extern crate nom;
-
 use aoc::*;
 
 fn main() {
@@ -12,5 +12,7 @@ fn main() {
     day3();
     println!();
     day4();
+    println!();
+    day5();
     println!();
 }
