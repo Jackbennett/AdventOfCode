@@ -10,8 +10,8 @@ mod rps_tournament;
 mod supply_stack;
 mod task_section;
 
-type OneStar = u32;
-type TwoStar = (u32, u32);
+type OneStar<T = u32> = T;
+type TwoStar<T = u32, U = u32> = (T, U);
 
 pub fn day5() {
     let _stacks =
