@@ -4,13 +4,32 @@
 
 use std::{fs, path};
 
-pub mod backpack;
-pub mod elves;
-pub mod rps_tournament;
-pub mod task_section;
+mod backpack;
+mod elves;
+mod rps_tournament;
+mod supply_stack;
+mod task_section;
 
-type OneStar = u32;
-type TwoStar = (u32, u32);
+type OneStar<T = u32> = T;
+type TwoStar<T = u32, U = u32> = (T, U);
+
+pub fn day5() -> OneStar<String> {
+    let stack_input =
+        fs::read_to_string("./input/Elf_Supply_Stacks.txt").expect("Missing Day 5 input file");
+    let (_, instruction_list) =
+        supply_stack::parse::find_instruction(&stack_input, supply_stack::DSLMove::parse).unwrap();
+    let mut stacks = supply_stack::get_stack_preset();
+    supply_stack::stack_operation(&mut stacks, instruction_list);
+
+    let tops = stacks.iter().filter_map(|s| s.last()).collect::<String>();
+
+    println!(
+        "(Day 5a) \"{}\" labels are on the tops of all the item stacks",
+        tops
+    );
+
+    tops
+}
 
 pub fn day4() -> TwoStar {
     let section_list = fs::read_to_string(path::Path::new("./input/Elf_Section_Assignment.txt"))
