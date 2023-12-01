@@ -4,6 +4,13 @@
 // extern crate nom;
 use aoc::*;
 
+macro_rules! dayN{
+    (N: usize) => {
+        day$N();
+        println!();
+
+    }
+}
 fn main() {
     day1();
     println!();

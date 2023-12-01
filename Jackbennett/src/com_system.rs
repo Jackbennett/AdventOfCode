@@ -1,4 +1,9 @@
-use nom::IResult;
+use itertools::Itertools;
+use nom::{
+    InputIter,
+    bytes::complete::{tag, take_until}, character::complete::alpha1, combinator::peek,
+    error::ErrorKind::TakeUntil, error::ParseError, Err::Failure, IResult,
+};
 
 trait ComSystem {
     fn start_of_packet(input: &str) -> usize;
@@ -14,9 +19,37 @@ trait ComSystem {
 // }
 
 fn start_of_packet(input: &str) -> IResult<&str, usize> {
-    let (rest, search_pattern) = nom::bytes::complete::take(4_usize)(input)?;
-    let
+    let (mut _remaining, mut raw_packet) = peek(alpha1)(input)?;
+    // let (rest, search_pattern) = take(4_usize)(raw_packet)?;
+
+    let mut found_start: bool;
+    let mut iter = raw_packet.as_bytes().windows(4);
+    let start_packet = loop {
+        match iter.next() {
+            Some(window) => {
+                if window.iter().all_unique() {
+                    break window
+                }
+            },
+            None => Err(Failure(nom::error::Error {
+                input: "wat",
+                code: TakeUntil,
+            })),
+        }
+    }
+
+    (start_packet, 4)
+
+
+    // let mut iter =
+    // peek(input) // peek the input until start of packet found
 }
+
+// fn packet(input: &str) -> IResult<&str, &str> {
+//     let (start, position) = start_of_packet(input)?;
+//     take_until(start)(input)
+// }
+
 
 #[test]
 fn test_start_of_packet() {
