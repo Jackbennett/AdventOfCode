@@ -8,6 +8,11 @@ import (
 
 type Games struct {
 	SumPossibleIds int
+	SumPower       int
+}
+
+type Game struct {
+	maxActualColours map[string]int
 }
 
 func (games *Games) ParseGame(dataline string, maxRed int, maxBlue int, maxGreen int) {
@@ -16,6 +21,11 @@ func (games *Games) ParseGame(dataline string, maxRed int, maxBlue int, maxGreen
 	maxColours["blue"] = maxBlue
 	maxColours["green"] = maxGreen
 	s := strings.Split(dataline, ":")
+	var newGame Game
+	newGame.maxActualColours = make(map[string]int)
+	newGame.maxActualColours["red"] = 0
+	newGame.maxActualColours["green"] = 0
+	newGame.maxActualColours["blue"] = 0
 	gameTitle := s[0]
 	gameContent := s[1]
 	s = strings.Fields(gameTitle)
@@ -33,6 +43,9 @@ func (games *Games) ParseGame(dataline string, maxRed int, maxBlue int, maxGreen
 				if err != nil {
 					fmt.Println("Can't convert this to an int! " + colourNumberSplit[0])
 				} else {
+					if newGame.maxActualColours[colourNumberSplit[1]] < cubeNumber {
+						newGame.maxActualColours[colourNumberSplit[1]] = cubeNumber
+					}
 					if maxColours[colourNumberSplit[1]] < cubeNumber {
 						possible = false
 					}
@@ -43,5 +56,6 @@ func (games *Games) ParseGame(dataline string, maxRed int, maxBlue int, maxGreen
 			games.SumPossibleIds += gameid
 		}
 	}
-
+	power := newGame.maxActualColours["red"] * newGame.maxActualColours["blue"] * newGame.maxActualColours["green"]
+	games.SumPower += power
 }

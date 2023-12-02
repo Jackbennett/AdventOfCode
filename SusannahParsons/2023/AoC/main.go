@@ -15,6 +15,7 @@ func main() {
 		games.ParseGame(s, 12, 14, 13)
 	}
 	fmt.Print(games.SumPossibleIds, " total.\n")
+	fmt.Print(games.SumPower, " sum powers\n")
 	// var treb1 trebuchet.Trebuchet
 	// for _, s := range data {
 	// 	treb1.AddCalibration(s)
