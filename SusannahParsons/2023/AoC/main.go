@@ -3,15 +3,21 @@
 package main
 
 import (
-	"AoC/trebuchet"
+	cubes "AoC/day2"
 	"fmt"
 )
 
 func main() {
-	var treb1 trebuchet.Trebuchet
-	var data = returnFileContentsArray("trebuchet/input.txt")
+
+	var data = returnFileContentsArray("day2/input.txt")
+	var games cubes.Games
 	for _, s := range data {
-		treb1.AddCalibration(s)
+		games.ParseGame(s, 12, 14, 13)
 	}
-	fmt.Print(treb1.RunningTotal, " total.\n")
+	fmt.Print(games.SumPossibleIds, " total.\n")
+	// var treb1 trebuchet.Trebuchet
+	// for _, s := range data {
+	// 	treb1.AddCalibration(s)
+	// }
+	// fmt.Print(treb1.RunningTotal, " total.\n")
 }
