@@ -1,15 +1,16 @@
 # depslib dependency file v1.0
-1671624416 source:d:\adventofcode\susannahparsons\boilingboulders\main.cpp
+1671625950 source:d:\adventofcode\susannahparsons\boilingboulders\main.cpp
 	"CubeScan.h"
 
-1671625590 d:\adventofcode\susannahparsons\boilingboulders\cubescan.h
+1671629853 d:\adventofcode\susannahparsons\boilingboulders\cubescan.h
 	<string>
 	<string.h>
 	<iostream>
 	<fstream>
 	<cmath>
 	<vector>
+	<algorithm>
 
-1671625883 source:d:\adventofcode\susannahparsons\boilingboulders\cubescan.cpp
+1671629628 source:d:\adventofcode\susannahparsons\boilingboulders\cubescan.cpp
 	"CubeScan.h"
 
