@@ -16,7 +16,8 @@ func main() {
 	}
 	engine.FindPartNumbers()
 	fmt.Print(engine.TotalPartNumber, " total.\n")
-
+	engine.FindGearRatios()
+	fmt.Print(engine.SumGearRatios, " sum gear ratios\n")
 	//Day 2
 	// var games cubes.Games
 	// for _, s := range data {
