@@ -3,21 +3,30 @@
 package main
 
 import (
-	engine "AoC/day3"
+	scratchcard "AoC/day4"
 	"fmt"
 )
 
 func main() {
-	var data = returnFileContentsArray("day3/input.txt")
-	//Day 3
-	var engine engine.Engine
+	var data = returnFileContentsArray("day4/input.txt")
+	//Day 4
+	var cardPile scratchcard.CardPile
+	cardPile.Cards = make(map[int]scratchcard.Scratchcard)
 	for i, s := range data {
-		engine.AddLine(s, i)
+		cardPile.ParseCards(s, i)
 	}
-	engine.FindPartNumbers()
-	fmt.Print(engine.TotalPartNumber, " total.\n")
-	engine.FindGearRatios()
-	fmt.Print(engine.SumGearRatios, " sum gear ratios\n")
+	fmt.Print(cardPile.TotalPoints, " total.\n")
+	cardPile.CountCards()
+
+	//Day 3
+	// var engine engine.Engine
+	// for i, s := range data {
+	// 	engine.AddLine(s, i)
+	// }
+	// engine.FindPartNumbers()
+	// fmt.Print(engine.TotalPartNumber, " total.\n")
+	// engine.FindGearRatios()
+	// fmt.Print(engine.SumGearRatios, " sum gear ratios\n")
 	//Day 2
 	// var games cubes.Games
 	// for _, s := range data {
