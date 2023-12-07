@@ -3,20 +3,28 @@
 package main
 
 import (
-	scratchcard "AoC/day4"
+	almanac "AoC/day5"
 	"fmt"
 )
 
 func main() {
-	var data = returnFileContentsArray("day4/input.txt")
-	//Day 4
-	var cardPile scratchcard.CardPile
-	cardPile.Cards = make(map[int]scratchcard.Scratchcard)
-	for i, s := range data {
-		cardPile.ParseCards(s, i)
+	var data = returnFileContentsArray("day5/input.txt")
+	//Day 5
+	var almanac almanac.Almanac
+	for _, s := range data {
+		almanac.ParseAlmanac(s)
 	}
-	fmt.Print(cardPile.TotalPoints, " total.\n")
-	cardPile.CountCards()
+	lowestLoc := almanac.FindLocations()
+	fmt.Print(lowestLoc, " lowest location\n")
+
+	//Day 4
+	// var cardPile scratchcard.CardPile
+	// cardPile.Cards = make(map[int]scratchcard.Scratchcard)
+	// for i, s := range data {
+	// 	cardPile.ParseCards(s, i)
+	// }
+	// fmt.Print(cardPile.TotalPoints, " total.\n")
+	// cardPile.CountCards()
 
 	//Day 3
 	// var engine engine.Engine
