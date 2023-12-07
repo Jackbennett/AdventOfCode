@@ -3,19 +3,27 @@
 package main
 
 import (
-	almanac "AoC/day5"
+	races "AoC/day6"
 	"fmt"
 )
 
 func main() {
-	var data = returnFileContentsArray("day5/input.txt")
-	//Day 5
-	var almanac almanac.Almanac
+	var data = returnFileContentsArray("day6/input.txt")
+	//Day 6
+	var races races.Races
 	for _, s := range data {
-		almanac.ParseAlmanac(s)
+		races.ParseRaces(s)
 	}
-	lowestLoc := almanac.FindLocations()
-	fmt.Print(lowestLoc, " lowest location\n")
+	multipleMarinsOfError := races.FindMarginOfError()
+	fmt.Print(multipleMarinsOfError, " multiple margins of error\n")
+
+	//Day 5
+	// var almanac almanac.Almanac
+	// for _, s := range data {
+	// 	almanac.ParseAlmanac(s)
+	// }
+	// lowestLoc := almanac.FindLocations()
+	// fmt.Print(lowestLoc, " lowest location\n")
 
 	//Day 4
 	// var cardPile scratchcard.CardPile
