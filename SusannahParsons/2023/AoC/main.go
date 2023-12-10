@@ -3,19 +3,24 @@
 package main
 
 import (
-	races "AoC/day6"
-	"fmt"
+	camelcards "AoC/day7"
 )
 
 func main() {
-	var data = returnFileContentsArray("day6/input.txt")
-	//Day 6
-	var races races.Races
+	var data = returnFileContentsArray("day7/input.txt")
+	//Day 7
+	var game camelcards.Game
 	for _, s := range data {
-		races.ParseRaces(s)
+		game.ParseHand(s)
 	}
-	multipleMarinsOfError := races.FindMarginOfError()
-	fmt.Print(multipleMarinsOfError, " multiple margins of error\n")
+	game.FindWinnings()
+	//Day 6
+	// var races races.Races
+	// for _, s := range data {
+	// 	races.ParseRaces(s)
+	// }
+	// multipleMarinsOfError := races.FindMarginOfError()
+	// fmt.Print(multipleMarinsOfError, " multiple margins of error\n")
 
 	//Day 5
 	// var almanac almanac.Almanac
