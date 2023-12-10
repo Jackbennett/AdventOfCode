@@ -3,17 +3,24 @@
 package main
 
 import (
-	camelcards "AoC/day7"
+	directions "AoC/day8"
 )
 
 func main() {
-	var data = returnFileContentsArray("day7/input.txt")
-	//Day 7
-	var game camelcards.Game
+	var data = returnFileContentsArray("day8/input.txt")
+	//Day 8
+	var directions directions.Directions
 	for _, s := range data {
-		game.ParseHand(s)
+		directions.ParseDirections(s)
 	}
-	game.FindWinnings()
+	directions.FollowDirections()
+
+	// //Day 7
+	// var game camelcards.Game
+	// for _, s := range data {
+	// 	game.ParseHand(s)
+	// }
+	// game.FindWinnings()
 
 	//Day 6
 	// var races races.Races
