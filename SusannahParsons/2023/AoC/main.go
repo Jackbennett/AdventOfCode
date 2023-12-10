@@ -14,6 +14,7 @@ func main() {
 		game.ParseHand(s)
 	}
 	game.FindWinnings()
+
 	//Day 6
 	// var races races.Races
 	// for _, s := range data {

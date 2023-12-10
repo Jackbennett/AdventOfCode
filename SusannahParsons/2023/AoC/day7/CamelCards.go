@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var CARDSTRENGTH = []byte{'A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'}
+var CARDSTRENGTH = []byte{'A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J'}
 
 var FIVEOFAKIND = 7
 var FOUROFAKIND = 6
@@ -72,6 +72,8 @@ func (hand *Hand) getType() {
 	var pairsFound int = 0
 	var fiveOfAKindFound bool = false
 	var fourOfAKindFound bool = false
+	jokersRegExp := regexp.MustCompile("J")
+	numberJokers := len(jokersRegExp.FindAllStringIndex(string(hand.hand), -1))
 	for _, cardLetter := range CARDSTRENGTH {
 		cardLetterRegExp := regexp.MustCompile(string(cardLetter))
 		matches := len(cardLetterRegExp.FindAllStringIndex(string(hand.hand), -1))
@@ -90,16 +92,42 @@ func (hand *Hand) getType() {
 	if fiveOfAKindFound {
 		hand.handtype = FIVEOFAKIND
 	} else if fourOfAKindFound {
-		hand.handtype = FOUROFAKIND
+		if numberJokers == 1 || numberJokers == 4 {
+			hand.handtype = FIVEOFAKIND
+		} else {
+			hand.handtype = FOUROFAKIND
+		}
 	} else if threesFound == 1 && pairsFound == 1 {
-		hand.handtype = FULLHOUSE
+		if numberJokers > 0 {
+			hand.handtype = FIVEOFAKIND
+		} else {
+			hand.handtype = FULLHOUSE
+		}
 	} else if threesFound == 1 && pairsFound == 0 {
-		hand.handtype = THREEOFAKIND
+		if numberJokers > 0 {
+			hand.handtype = FOUROFAKIND
+		} else {
+			hand.handtype = THREEOFAKIND
+		}
 	} else if threesFound == 0 && pairsFound == 2 {
-		hand.handtype = TWOPAIR
+		if numberJokers == 2 {
+			hand.handtype = FOUROFAKIND
+		} else if numberJokers == 1 {
+			hand.handtype = FULLHOUSE
+		} else {
+			hand.handtype = TWOPAIR
+		}
 	} else if threesFound == 0 && pairsFound == 1 {
-		hand.handtype = ONEPAIR
+		if numberJokers > 0 {
+			hand.handtype = THREEOFAKIND
+		} else {
+			hand.handtype = ONEPAIR
+		}
 	} else if threesFound == 0 && pairsFound == 0 {
-		hand.handtype = HIGHCARD
+		if numberJokers == 1 {
+			hand.handtype = ONEPAIR
+		} else {
+			hand.handtype = HIGHCARD
+		}
 	}
 }
