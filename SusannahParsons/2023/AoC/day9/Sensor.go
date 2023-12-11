@@ -9,20 +9,40 @@ type History struct {
 }
 
 type Report struct {
-	histories      []History
-	SumPredictions int
+	histories             []History
+	SumPredictions        int
+	SumReversePredictions int
 }
 
 func (report *Report) ParseHistories(line string) {
 	var newHistory History
 	var firstSequence = helper.GetIntArrayFromStringList(line, " ")
 	newHistory.sequences = append(newHistory.sequences, firstSequence)
-	prediction := newHistory.getPrediction()
+	prediction, newSequences := newHistory.getPrediction()
+	newHistory.sequences = newSequences
+	reversePrediction := newHistory.getReversePrediction()
+	report.SumReversePredictions += reversePrediction
 	report.SumPredictions += prediction
 	report.histories = append(report.histories, newHistory)
 }
 
-func (history History) getPrediction() int {
+func (history History) getReversePrediction() int {
+	extrapolation := 0
+	zeroSequence := history.sequences[len(history.sequences)-1]
+	//prepend
+	zeroSequence = append([]int{extrapolation}, zeroSequence...)
+	history.sequences[len(history.sequences)-1] = zeroSequence
+	for j := len(history.sequences) - 2; j >= 0; j-- {
+		nextSequence := history.sequences[j]
+		firstValue := nextSequence[0]
+		extrapolation = firstValue - extrapolation
+		nextSequence = append([]int{extrapolation}, nextSequence...)
+		history.sequences[j] = nextSequence
+	}
+	return extrapolation
+}
+
+func (history History) getPrediction() (int, [][]int) {
 	lastSequence := history.sequences[len(history.sequences)-1]
 	var sequenceDifferences []int
 	currentInt := lastSequence[0]
@@ -51,6 +71,6 @@ func (history History) getPrediction() int {
 			nextSequence = append(nextSequence, extrapolation)
 			history.sequences[j] = nextSequence
 		}
-		return extrapolation
+		return extrapolation, history.sequences
 	}
 }

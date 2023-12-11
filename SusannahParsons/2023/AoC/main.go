@@ -15,6 +15,7 @@ func main() {
 		report.ParseHistories(s)
 	}
 	fmt.Print(report.SumPredictions, " sum predictions\n")
+	fmt.Print(report.SumReversePredictions, " sum reverse predictions\n")
 
 	//Day 8
 	// var directions directions.Directions
