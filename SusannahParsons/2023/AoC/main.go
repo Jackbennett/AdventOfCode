@@ -3,19 +3,41 @@
 package main
 
 import (
-	races "AoC/day6"
+	sensor "AoC/day9"
 	"fmt"
 )
 
 func main() {
-	var data = returnFileContentsArray("day6/input.txt")
-	//Day 6
-	var races races.Races
+	var data = returnFileContentsArray("day9/input.txt")
+	//Day 9
+	var report sensor.Report
 	for _, s := range data {
-		races.ParseRaces(s)
+		report.ParseHistories(s)
 	}
-	multipleMarinsOfError := races.FindMarginOfError()
-	fmt.Print(multipleMarinsOfError, " multiple margins of error\n")
+	fmt.Print(report.SumPredictions, " sum predictions\n")
+	fmt.Print(report.SumReversePredictions, " sum reverse predictions\n")
+
+	//Day 8
+	// var directions directions.Directions
+	// for _, s := range data {
+	// 	directions.ParseDirections(s)
+	// }
+	// directions.FollowDirections()
+
+	// //Day 7
+	// var game camelcards.Game
+	// for _, s := range data {
+	// 	game.ParseHand(s)
+	// }
+	// game.FindWinnings()
+
+	//Day 6
+	// var races races.Races
+	// for _, s := range data {
+	// 	races.ParseRaces(s)
+	// }
+	// multipleMarinsOfError := races.FindMarginOfError()
+	// fmt.Print(multipleMarinsOfError, " multiple margins of error\n")
 
 	//Day 5
 	// var almanac almanac.Almanac
