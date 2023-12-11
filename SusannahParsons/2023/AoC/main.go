@@ -3,17 +3,25 @@
 package main
 
 import (
-	directions "AoC/day8"
+	sensor "AoC/day9"
+	"fmt"
 )
 
 func main() {
-	var data = returnFileContentsArray("day8/input.txt")
-	//Day 8
-	var directions directions.Directions
+	var data = returnFileContentsArray("day9/input.txt")
+	//Day 9
+	var report sensor.Report
 	for _, s := range data {
-		directions.ParseDirections(s)
+		report.ParseHistories(s)
 	}
-	directions.FollowDirections()
+	fmt.Print(report.SumPredictions, " sum predictions\n")
+
+	//Day 8
+	// var directions directions.Directions
+	// for _, s := range data {
+	// 	directions.ParseDirections(s)
+	// }
+	// directions.FollowDirections()
 
 	// //Day 7
 	// var game camelcards.Game
