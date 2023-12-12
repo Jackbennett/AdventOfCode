@@ -14,6 +14,7 @@ func main() {
 		maze.ParseRow(s, i)
 	}
 	maze.FindMostDistantTile()
+	maze.CountTilesInLoop()
 
 	// //Day 9
 	// var report sensor.Report
