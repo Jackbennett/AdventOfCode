@@ -6,6 +6,118 @@ import (
 	"strings"
 )
 
+type Direction int64
+
+var OppositeDirectionMap = map[Direction]Direction{
+	North: South,
+	South: North,
+	East:  West,
+	West:  East,
+}
+
+const (
+	North Direction = iota
+	South
+	East
+	West
+)
+
+func (s Direction) String() string {
+	switch s {
+	case North:
+		return "North"
+	case South:
+		return "South"
+	case East:
+		return "East"
+	case West:
+		return "West"
+	}
+	return "unknown"
+}
+
+type Coordinate struct {
+	X int
+	Y int
+}
+
+type Tile struct {
+	Symbol     rune
+	Connected  []Direction
+	StepsFromS int
+	Coord      Coordinate
+}
+
+type mappableItem interface {
+	Tile
+}
+
+type FieldMap[T mappableItem] struct {
+	fieldMap map[int]map[int]*T
+}
+
+func (field *FieldMap[T]) AddToMap(x int, y int, item *T) {
+	if field.fieldMap == nil {
+		field.fieldMap = make(map[int]map[int]*T)
+	}
+	if field.fieldMap[x] == nil {
+		field.fieldMap[x] = make(map[int]*T)
+	}
+	field.fieldMap[x][y] = item
+}
+
+func (field *FieldMap[T]) GetItem(coord Coordinate) *T {
+	return field.fieldMap[coord.X][coord.Y]
+}
+
+func (field *FieldMap[T]) GetAdjacentItem(coord Coordinate, direction Direction) (*T, bool) {
+	if direction == North {
+		return field.getItemToNorth(coord)
+	} else if direction == South {
+		return field.getItemToSouth(coord)
+	} else if direction == East {
+		return field.getItemToEast(coord)
+	} else {
+		return field.getItemToWest(coord)
+	}
+}
+
+func (field *FieldMap[T]) getItemToNorth(coord Coordinate) (*T, bool) {
+	if coord.Y-1 >= 0 {
+		return field.fieldMap[coord.X][coord.Y-1], true
+	} else {
+		var zeroT T
+		return &zeroT, false
+	}
+}
+
+func (field *FieldMap[T]) getItemToSouth(coord Coordinate) (*T, bool) {
+	if coord.Y+1 < len(field.fieldMap[coord.X]) {
+		return field.fieldMap[coord.X][coord.Y+1], true
+	} else {
+		var zeroT T
+		return &zeroT, false
+	}
+}
+
+func (field *FieldMap[T]) getItemToEast(coord Coordinate) (*T, bool) {
+	if coord.X+1 < len(field.fieldMap) {
+		return field.fieldMap[coord.X+1][coord.Y], true
+	} else {
+		var zeroT T
+		return &zeroT, false
+	}
+}
+
+func (field *FieldMap[T]) getItemToWest(coord Coordinate) (*T, bool) {
+	if coord.X-1 >= 0 {
+		return field.fieldMap[coord.X-1][coord.Y], true
+	} else {
+		var zeroT T
+		return &zeroT, false
+	}
+}
+
 func GetIntArrayFromStringList(stringlist string, delimiter string) []int {
 	var intArray []int
 	stringArray := strings.Split(strings.Trim(stringlist, " "), delimiter)

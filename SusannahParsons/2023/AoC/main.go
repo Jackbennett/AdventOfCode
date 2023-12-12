@@ -3,19 +3,25 @@
 package main
 
 import (
-	sensor "AoC/day9"
-	"fmt"
+	pipeMaze "AoC/day10"
 )
 
 func main() {
-	var data = returnFileContentsArray("day9/input.txt")
-	//Day 9
-	var report sensor.Report
-	for _, s := range data {
-		report.ParseHistories(s)
+	var data = returnFileContentsArray("day10/input.txt")
+	//Day 10
+	var maze pipeMaze.PipeMaze
+	for i, s := range data {
+		maze.ParseRow(s, i)
 	}
-	fmt.Print(report.SumPredictions, " sum predictions\n")
-	fmt.Print(report.SumReversePredictions, " sum reverse predictions\n")
+	maze.FindMostDistantTile()
+
+	// //Day 9
+	// var report sensor.Report
+	// for _, s := range data {
+	// 	report.ParseHistories(s)
+	// }
+	// fmt.Print(report.SumPredictions, " sum predictions\n")
+	// fmt.Print(report.SumReversePredictions, " sum reverse predictions\n")
 
 	//Day 8
 	// var directions directions.Directions
