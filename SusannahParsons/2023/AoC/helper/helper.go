@@ -46,6 +46,7 @@ type Tile struct {
 	Connected  []Direction
 	StepsFromS int
 	Coord      Coordinate
+	PartOfLoop bool
 }
 
 type mappableItem interface {
@@ -53,21 +54,21 @@ type mappableItem interface {
 }
 
 type FieldMap[T mappableItem] struct {
-	fieldMap map[int]map[int]*T
+	FieldMap map[int]map[int]*T
 }
 
 func (field *FieldMap[T]) AddToMap(x int, y int, item *T) {
-	if field.fieldMap == nil {
-		field.fieldMap = make(map[int]map[int]*T)
+	if field.FieldMap == nil {
+		field.FieldMap = make(map[int]map[int]*T)
 	}
-	if field.fieldMap[x] == nil {
-		field.fieldMap[x] = make(map[int]*T)
+	if field.FieldMap[x] == nil {
+		field.FieldMap[x] = make(map[int]*T)
 	}
-	field.fieldMap[x][y] = item
+	field.FieldMap[x][y] = item
 }
 
 func (field *FieldMap[T]) GetItem(coord Coordinate) *T {
-	return field.fieldMap[coord.X][coord.Y]
+	return field.FieldMap[coord.X][coord.Y]
 }
 
 func (field *FieldMap[T]) GetAdjacentItem(coord Coordinate, direction Direction) (*T, bool) {
@@ -84,7 +85,7 @@ func (field *FieldMap[T]) GetAdjacentItem(coord Coordinate, direction Direction)
 
 func (field *FieldMap[T]) getItemToNorth(coord Coordinate) (*T, bool) {
 	if coord.Y-1 >= 0 {
-		return field.fieldMap[coord.X][coord.Y-1], true
+		return field.FieldMap[coord.X][coord.Y-1], true
 	} else {
 		var zeroT T
 		return &zeroT, false
@@ -92,8 +93,8 @@ func (field *FieldMap[T]) getItemToNorth(coord Coordinate) (*T, bool) {
 }
 
 func (field *FieldMap[T]) getItemToSouth(coord Coordinate) (*T, bool) {
-	if coord.Y+1 < len(field.fieldMap[coord.X]) {
-		return field.fieldMap[coord.X][coord.Y+1], true
+	if coord.Y+1 < len(field.FieldMap[coord.X]) {
+		return field.FieldMap[coord.X][coord.Y+1], true
 	} else {
 		var zeroT T
 		return &zeroT, false
@@ -101,8 +102,8 @@ func (field *FieldMap[T]) getItemToSouth(coord Coordinate) (*T, bool) {
 }
 
 func (field *FieldMap[T]) getItemToEast(coord Coordinate) (*T, bool) {
-	if coord.X+1 < len(field.fieldMap) {
-		return field.fieldMap[coord.X+1][coord.Y], true
+	if coord.X+1 < len(field.FieldMap) {
+		return field.FieldMap[coord.X+1][coord.Y], true
 	} else {
 		var zeroT T
 		return &zeroT, false
@@ -111,7 +112,7 @@ func (field *FieldMap[T]) getItemToEast(coord Coordinate) (*T, bool) {
 
 func (field *FieldMap[T]) getItemToWest(coord Coordinate) (*T, bool) {
 	if coord.X-1 >= 0 {
-		return field.fieldMap[coord.X-1][coord.Y], true
+		return field.FieldMap[coord.X-1][coord.Y], true
 	} else {
 		var zeroT T
 		return &zeroT, false
