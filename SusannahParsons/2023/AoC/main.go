@@ -3,18 +3,25 @@
 package main
 
 import (
-	pipeMaze "AoC/day10"
+	obs "AoC/day11"
 )
 
 func main() {
-	var data = returnFileContentsArray("day10/input.txt")
-	//Day 10
-	var maze pipeMaze.PipeMaze
+	var data = returnFileContentsArray("day11/input.txt")
+	//Day 11
+	var obs obs.Observations
 	for i, s := range data {
-		maze.ParseRow(s, i)
+		obs.ParseRow(s, i)
 	}
-	maze.FindMostDistantTile()
-	maze.CountTilesInLoop()
+	obs.Expand()
+	obs.FindShortestPaths()
+	//Day 10
+	// var maze pipeMaze.PipeMaze
+	// for i, s := range data {
+	// 	maze.ParseRow(s, i)
+	// }
+	// maze.FindMostDistantTile()
+	// maze.CountTilesInLoop()
 
 	// //Day 9
 	// var report sensor.Report

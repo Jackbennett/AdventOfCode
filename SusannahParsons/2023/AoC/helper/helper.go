@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"cmp"
 	"fmt"
 	"strconv"
 	"strings"
@@ -41,6 +42,27 @@ type Coordinate struct {
 	Y int
 }
 
+func SortSpaceByX(a, b *Space) int {
+	if n := cmp.Compare(a.Coord.X, b.Coord.X); n != 0 {
+		return n
+	}
+	// If names are equal, order by age
+	return cmp.Compare(a.Coord.Y, b.Coord.Y)
+}
+
+func SortSpaceByY(a, b *Space) int {
+	if n := cmp.Compare(a.Coord.Y, b.Coord.Y); n != 0 {
+		return n
+	}
+	// If names are equal, order by age
+	return cmp.Compare(a.Coord.X, b.Coord.X)
+}
+
+type Space struct {
+	IsGalaxy bool
+	Coord    Coordinate
+}
+
 type Tile struct {
 	Symbol     rune
 	Connected  []Direction
@@ -50,7 +72,7 @@ type Tile struct {
 }
 
 type mappableItem interface {
-	Tile
+	Tile | Space
 }
 
 type FieldMap[T mappableItem] struct {
