@@ -24,14 +24,6 @@ Deno.test('distance', () => {
     assertEquals(distance(9, 4), 5)
 })
 
-Deno.test('answer', () => {
-    // parse example
-    // sort lists A and B smallest first (a==locationID)
-    // get distances
-    // sum distance == answer
-
-})
-
 Deno.test('example', async () => {
     const [ a, b ] = await parse('./example.txt')
     assert(Array.isArray(a))
@@ -51,24 +43,29 @@ export async function day1a() {
     return r.reduce((acc, val) => acc + val, 0)
 }
 
-Deno.test('day 1 answer', async () => {
-    const answer = await day1a()
-    assertEquals(answer, 2904518)
-})
 
 console.log(await day1a()) // 
 
 export async function day1b() {
     const [ a, b ] = await parse('./input.txt')
-
+    
     const map = b.reduce((acc: { [index: number]: number }, val) => {
         acc[val] = Object.hasOwn(acc, val) ? acc[val] + 1 : 1
         return acc
     }, {})
-
-    const dist = a.filter(val => Object.hasOwn(b, val)).map((val) => val * map[val] )
+    
+    const dist = a.filter(val => Object.hasOwn(map, val)).map((val) => val * map[val] )
     const ans = dist.reduce((acc, val) => acc + val, 0)
-    console.log(ans)
+    return ans
 }
 
-await day1b()
+Deno.test('day 1 answer part 1', async () => {
+    const answer = await day1a()
+    assertEquals(answer, 2904518)
+})
+
+
+Deno.test('day 1 answer part 2', async () => {
+    const answer = await day1b()
+    assertEquals(answer, 18650129)
+})
