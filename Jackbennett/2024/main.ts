@@ -1,6 +1,15 @@
 
-import { assert, assertEquals } from "jsr:@std/assert";
+// const kv = Deno.openKv()
 
+// enum DayPart {
+//     One,
+//     Two
+// }
+
+// interface Progress {
+//     day: number,
+//     progress?: DayPart
+// }
 
 const parse = async (path: string) => {
     const f = (await Deno.readTextFile(path)).split('\n')
@@ -14,58 +23,26 @@ const parse = async (path: string) => {
     return [id,dist]
 }
 
-const distance = (a: number, b: number) => Math.abs(b - a)
-Deno.test('distance', () => {
-    assertEquals(distance(1, 3), 2)
-    assertEquals(distance(2, 3), 1)
-    assertEquals(distance(3, 3), 0)
-    assertEquals(distance(3, 4), 1)
-    assertEquals(distance(3, 5), 2)
-    assertEquals(distance(9, 4), 5)
-})
+// function testDay(number: number) {
+//     const fn = import(`day${number}/mod.ts`)
+// }
 
-Deno.test('example', async () => {
-    const [ a, b ] = await parse('./example.txt')
-    assert(Array.isArray(a))
-    assert(Array.isArray(b))
-    a.sort()
-    b.sort()
-    const r = a.map( (n, i) => distance(n, b[i]) )
-    const sum = r.reduce((acc, val) => acc + val, 0)
-    assertEquals(sum, 11)
-})
+// for(const d of Array.from(Array(24))){
+//     testDay(d)
+// }
+// const progress = kv.list<number>({prefix: 'days'})
+// Math.max(progress)
 
-export async function day1a() {
-    const [ a, b ] = await parse('./input.txt')
-    a.sort()
-    b.sort()
-    const r = a.map( (n, i) => distance(n, b[i]) )
-    return r.reduce((acc, val) => acc + val, 0)
+function now(){
+    const done = Array.from(Deno.readDirSync(import.meta.dirname || './'))
+    .filter(n => n.isDirectory)
+    .filter(n => n.name.startsWith('day'))
+    .map( n => {
+        const [_drop, num] = n.name.split('day')
+        return parseInt(num, 10)
+    })
+    const fn = import(`day${Math.max(...done)}/mod.ts`)
+    fn()
 }
 
-
-console.log(await day1a()) // 
-
-export async function day1b() {
-    const [ a, b ] = await parse('./input.txt')
-    
-    const map = b.reduce((acc: { [index: number]: number }, val) => {
-        acc[val] = Object.hasOwn(acc, val) ? acc[val] + 1 : 1
-        return acc
-    }, {})
-    
-    const dist = a.filter(val => Object.hasOwn(map, val)).map((val) => val * map[val] )
-    const ans = dist.reduce((acc, val) => acc + val, 0)
-    return ans
-}
-
-Deno.test('day 1 answer part 1', async () => {
-    const answer = await day1a()
-    assertEquals(answer, 2904518)
-})
-
-
-Deno.test('day 1 answer part 2', async () => {
-    const answer = await day1b()
-    assertEquals(answer, 18650129)
-})
+now()

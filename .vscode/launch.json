@@ -8,8 +8,8 @@
             "request": "launch",
             "name": "Program",
             "type": "node",
-            "program": "${workspaceFolder}/Jackbennett/2024/main.ts",
-            "cwd": "${workspaceFolder}/Jackbennett/2024",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
             "env": {},
             "runtimeExecutable": "/home/codespace/.deno/bin/deno",
             "runtimeArgs": [
