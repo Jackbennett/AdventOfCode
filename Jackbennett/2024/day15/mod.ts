@@ -140,7 +140,7 @@ Deno.test('day 15 small example', () => {
 
 Deno.test('day 15 part 1',  () => {
     const answer = part1(parse(Deno.readTextFileSync('./input.txt')))
-    assertEquals(answer, 2028)
+    assertEquals(answer, 1371036)
 })
 
 const answer = part1(parse(Deno.readTextFileSync('./input.txt')))
