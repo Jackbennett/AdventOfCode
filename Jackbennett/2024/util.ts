@@ -15,6 +15,14 @@ export class Coordinate {
     is(to: Coordinate): boolean {
         return this.compare(to) === 0
     }
+    look(distance: number, from: Coordinate){
+        return [
+            this.add({x: distance}),
+            this.add({x: -distance}),
+            this.add({y: distance}),
+            this.add({y: -distance}),          
+        ].filter(p => !p.is(from))
+    }
     compare(to: Coordinate) {
         if(this.x > to.x || this.y > to.y) return 1
         if(this.x < to.x || this.y < to.y) return -1
