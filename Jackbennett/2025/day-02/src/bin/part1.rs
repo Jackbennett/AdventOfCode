@@ -2,7 +2,7 @@ fn main() {
     let input = include_str!("../../input.txt");
     let ans = challenge(input);
 
-    println!("Day 1 Part 1, {}", ans)
+    println!("Day 2 Part 1, {}", ans)
 }
 
 fn parse(i: &str) -> Vec<u64> {
