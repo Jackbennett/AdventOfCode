@@ -1,10 +1,11 @@
 {
   "deno.enable": true,
+  "rust-analyzer.linkedProjects": ["./Jackbennett/2025/day-02/Cargo.toml"],
+  // "rust-analyzer.linkedProjects": ["./Jackbennett/2025/Cargo.toml"],
   "github.copilot.enable": {
     "*": false,
     "plaintext": false,
     "markdown": false,
     "scminput": false
-  },
-  "rust-analyzer.linkedProjects": ["./Jackbennett/2025/day-01/Cargo.toml"]
+  }
 }
