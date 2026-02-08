@@ -1,6 +1,5 @@
 import { assert, assertEquals } from 'jsr:@std/assert';
-import { sum,parse } from '../util.ts'
-
+import { sum,parse, Coordinate } from '../util.ts'
 
 const example = `p=0,4 v=3,-3
 p=6,3 v=-1,-3
@@ -14,10 +13,6 @@ p=9,3 v=2,3
 p=7,3 v=-1,2
 p=2,4 v=2,-3
 p=9,5 v=-3,-3`
-
-class Coordinate {
-    constructor(public x: number, public y: number) {}
-}
 
 const createRobot = (str: string) => {
     return parse(str).map((line, idx) => {
